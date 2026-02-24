@@ -1,14 +1,17 @@
-from flask import send_from_directory
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import requests
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=".")
 CORS(app)
 
-TOKEN = os.environ.get("8337983319:AAH3iAAqYc1ncV2vjzJaIa9nQlP3is0R6CI")
-CHAT_ID = os.environ.get("7311023411")
+TOKEN = os.environ.get("BOT_TOKEN")
+CHAT_ID = os.environ.get("CHAT_ID")
+
+@app.route("/")
+def home():
+    return send_from_directory(".", "index.html")
 
 @app.route("/send-order", methods=["POST"])
 def send_order():
@@ -31,9 +34,3 @@ Telefon: {data.get('phone')}
     )
 
     return jsonify({"status": "ok"})
-
-    from flask import send_from_directory
-
-@app.route("/")
-def home():
-    return send_from_directory(".", "index.html")
