@@ -21,83 +21,85 @@ function saveOrders(data){
    MAHSULOTLARNI CHIQARISH
 ========================= */
 
-function renderProducts(){
+let selectedProduct = null;
 
+// MAHSULOTLARNI CHIQARISH
+function renderProducts() {
   const container = document.getElementById("products");
-  if(!container) return;
+  const products = JSON.parse(localStorage.getItem("products")) || [];
 
-  const products = getProducts();
   container.innerHTML = "";
 
   products.forEach(p => {
-
     container.innerHTML += `
       <div class="card">
         <img src="${p.image}">
         <h3>${p.name}</h3>
-        <p>${p.price} so'm / ${p.unit}</p>
+        <p>${p.price}</p>
 
-        <button class="order-btn">Buyurtma berish</button>
-
-        <a href="https://t.me/smartdehqon"
-           target="_blank"
-           class="tg-btn">
-           Telegram yozish
-        </a>
+        <button onclick='openOrder(${JSON.stringify(p)})'>
+          Buyurtma berish
+        </button>
       </div>
     `;
   });
 }
 
+// POPUP OCHISH
+function openOrder(product){
+  selectedProduct = product;
+  document.getElementById("popup").style.display = "flex";
+}
 
-/* =========================
-   BUYURTMA BOSILDI
-========================= */
+// POPUP YOPISH
+function closePopup(){
+  document.getElementById("popup").style.display = "none";
+  document.getElementById("phoneInput").value = "";
+}
 
-document.addEventListener("click", function(e){
+// BUYURTMA YUBORISH
+function submitOrder(){
+  const phone = document.getElementById("phoneInput").value.trim();
 
-  if(e.target.classList.contains("order-btn")){
-
-    const card = e.target.closest(".card");
-    if(!card) return;
-
-    const name  = card.querySelector("h3").innerText;
-    const price = card.querySelector("p").innerText;
-
-    window.currentProduct = { name, price };
-
-    const popup = document.getElementById("popup");
-    if(popup){
-      popup.style.display = "flex";
-    }
+  if(!phone){
+    alert("Telefon kiriting");
+    return;
   }
 
-});
+  if(!selectedProduct){
+    alert("Mahsulot topilmadi");
+    return;
+  }
 
+  const data = {
+    product: selectedProduct.name,
+    price: selectedProduct.price,
+    phone: phone
+  };
+
+  fetch("/send-order", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(() => {
+    alert("Buyurtma yuborildi");
+    closePopup();
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Server xatosi");
+  });
+}
+
+document.addEventListener("DOMContentLoaded", renderProducts);
 
 /* =========================
    POPUP YOPISH
 ========================= */
 
-function closePopup(){
 
-  const popup = document.getElementById("popup");
-  if(!popup) return;
-
-  popup.style.display = "none";
-
-  const phoneInput = document.getElementById("phoneInput");
-  const form = document.getElementById("orderForm");
-  const success = document.getElementById("orderSuccess");
-
-  if(phoneInput){
-    phoneInput.value = "";
-    phoneInput.classList.remove("error");
-  }
-
-  if(form) form.style.display = "block";
-  if(success) success.style.display = "none";
-}
 
 
 /* =========================
@@ -105,9 +107,7 @@ function closePopup(){
 ========================= */
 
 
-function closeModal() {
-  document.getElementById("orderModal").style.display = "none";
-}
+
 
 function submitOrder() {
 

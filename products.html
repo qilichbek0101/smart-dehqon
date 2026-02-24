@@ -26,25 +26,18 @@
 
 <section class="products-preview">
   <h2>Barcha mahsulotlar</h2>
-
   <div class="products" id="products"></div>
 </section>
 
 <!-- POPUP -->
 <div id="popup" class="popup">
   <div class="popup-box">
-    <div id="orderForm">
-      <h3>Telefon raqamingiz</h3>
-      <input type="text" id="phoneInput" placeholder="998901234567">
-      <div class="popup-actions">
-        <button onclick="submitOrder()">Yuborish</button>
-        <button class="secondary" onclick="closePopup()">Bekor</button>
-      </div>
-    </div>
-    
-    <div id="orderSuccess" style="display:none;">
-      <h3 class="success">Buyurtma qabul qilindi <br>Tez orada siz bilan bog'lanamiz !</h3>
-      <button onclick="closePopup()">Yopish</button>
+    <h3>Telefon raqamingiz</h3>
+    <input type="text" id="phoneInput" placeholder="+998901234567">
+
+    <div class="popup-actions">
+      <button onclick="submitOrder()">Yuborish</button>
+      <button class="secondary" onclick="closePopup()">Bekor</button>
     </div>
   </div>
 </div>
