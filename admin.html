@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fermer paneli</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Inter&display=swap" rel="stylesheet">
+</head>
+<div id="ordersModal" class="modal">
+ 
+
+  </div>
+</div>
+<body>
+  
+  <a href="index.html" class="home-btn">← Bosh sahifa</a>
+  
+<a href="products.html" class="home-btn">Mahsulotlar</a>
+ 
+<header class="header">
+    <a href="index.html" class="home-btn">← Bosh sahifa</a>
+    <div class="admin-tabs">
+    </div>
+  <a href="products.html" class="admin-btn">Mahsulotlar</a>
+  <!-- <a href="#" class="orders-btn" onclick="openOrders()">Buyurtmalar</a> -->
+  
+  
+  <div class="header-container">
+    <img src="image/logo3.jpg" class="logo">
+    <div class="brand-text">
+      <h1>Smart Dehqon</h1>
+      <p>Fermer paneli</p>
+    </div>
+  </div>
+  
+</header>
+
+<section class="hero">
+  <h2>Mahsulot qo‘shish</h2>
+  <div id="adminProducts"></div>
+
+  <div class="admin-form">
+    <input type="text" id="name" placeholder="Mahsulot nomi">
+    <input type="text" id="price" placeholder="Narx">
+    <select id="unit">
+  <option value="kg">kg</option>
+  <option value="dona">dona</option>
+</select>
+    <input type="file" id="imageInput" accept="image/*">
+    <button onclick="addProduct()">Qo‘shish</button>
+    
+  </div>
+  
+<div id="ordersList"></div>
+
+<div id="ordersList" style="max-width:500px;margin:20px auto;"></div>
+</section>
+<div id="ordersPanel" class="orders-panel">
+  <!-- <h3>Buyurtmalar</h3> -->
+  <div id="ordersList"></div>
+</div>
+
+
+<script src="admin.js"></script>
+</body>
+</html>
