@@ -6,8 +6,8 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-TOKEN = os.environ.get("BOT_TOKEN")
-CHAT_ID = os.environ.get("CHAT_ID")
+TOKEN = os.environ.get("8337983319:AAH3iAAqYc1ncV2vjzJaIa9nQlP3is0R6CI")
+CHAT_ID = os.environ.get("7311023411")
 
 @app.route("/send-order", methods=["POST"])
 def send_order():
@@ -30,6 +30,3 @@ Telefon: {data.get('phone')}
     )
 
     return jsonify({"status": "ok"})
-
-  if __name__ == "__main__":
-         app.run(host="0.0.0.0", port=5000)
