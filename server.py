@@ -1,9 +1,9 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 import os
 
-app = Flask(__name__, static_folder=".")
+app = Flask(__name__, static_folder=".", static_url_path="")
 CORS(app)
 
 TOKEN = os.environ.get("BOT_TOKEN")
@@ -11,7 +11,7 @@ CHAT_ID = os.environ.get("CHAT_ID")
 
 @app.route("/")
 def home():
-    return send_from_directory(".", "index.html")
+    return app.send_static_file("index.html")
 
 @app.route("/send-order", methods=["POST"])
 def send_order():
