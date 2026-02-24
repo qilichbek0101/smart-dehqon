@@ -104,51 +104,31 @@ function closePopup(){
    BUYURTMA YUBORISH
 ========================= */
 
-function submitOrder(){
+function submitOrder() {
 
-  const phoneEl = document.getElementById("phoneInput");
-  if(!phoneEl) return;
+  const phone = document.getElementById("phone").value;
 
-  const phone = phoneEl.value.trim();
-
-  if(phone.length < 9){
-    phoneEl.classList.add("error");
-    phoneEl.focus();
-    return;
-  }
-
-  phoneEl.classList.remove("error");
-
-  const order = {
-    id: Date.now(),
-    phone: phone,
-    product: window.currentProduct?.name || "",
-    price: window.currentProduct?.price || "",
-    date: new Date().toLocaleString()
+  const data = {
+    product: selectedProduct.name,
+    price: selectedProduct.price,
+    phone: phone
   };
 
-  // LOCAL SAQLASH
-  const orders = getOrders();
-  orders.push(order);
-  saveOrders(orders);
-
-  // TELEGRAMGA YUBORISH
- fetch("https://smart-dehqon.onrender.com/send-order", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(data)
-})
-  .then(res => console.log("Server:", res.status))
-  .catch(err => console.error("Fetch error:", err));
-
-  // UI SUCCESS
-  const form = document.getElementById("orderForm");
-  const success = document.getElementById("orderSuccess");
-
-  if(form) form.style.display = "none";
-  if(success) success.style.display = "block";
+  fetch("/send-order", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(response => {
+    alert("Buyurtma yuborildi!");
+    closeModal();
+  })
+  .catch(error => {
+    console.error("Xato:", error);
+    alert("Xatolik yuz berdi");
+  });
 }
-
 
 /* =========================
    INIT
