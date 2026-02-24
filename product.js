@@ -133,16 +133,10 @@ function submitOrder(){
   saveOrders(orders);
 
   // TELEGRAMGA YUBORISH
- fetch("http://127.0.0.1:5000/send-order", {
+ fetch("https://smart-dehqon.onrender.com/send-order", {
   method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    phone: order.phone,
-    product: order.product,
-    price: order.price
-  })
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(data)
 })
   .then(res => console.log("Server:", res.status))
   .catch(err => console.error("Fetch error:", err));

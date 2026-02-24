@@ -30,3 +30,9 @@ Telefon: {data.get('phone')}
     )
 
     return jsonify({"status": "ok"})
+
+    from flask import send_from_directory
+
+@app.route("/")
+def home():
+    return send_from_directory(".", "index.html")
