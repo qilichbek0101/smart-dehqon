@@ -104,9 +104,30 @@ function closePopup(){
    BUYURTMA YUBORISH
 ========================= */
 
-function submitOrder() {
+let selectedProduct = null;
 
-  const phone = document.getElementById("phone").value;
+function openOrderModal(product) {
+  selectedProduct = product;
+  document.getElementById("orderModal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("orderModal").style.display = "none";
+}
+
+function submitOrder() {
+  const phoneInput = document.getElementById("phone");
+  const phone = phoneInput.value.trim();
+
+  if (!phone) {
+    alert("Telefon kiriting");
+    return;
+  }
+
+  if (!selectedProduct) {
+    alert("Mahsulot topilmadi");
+    return;
+  }
 
   const data = {
     product: selectedProduct.name,
@@ -116,17 +137,20 @@ function submitOrder() {
 
   fetch("/send-order", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify(data)
   })
   .then(res => res.json())
-  .then(response => {
-    alert("Buyurtma yuborildi!");
+  .then(res => {
+    alert("Buyurtma yuborildi");
     closeModal();
+    phoneInput.value = "";
   })
-  .catch(error => {
-    console.error("Xato:", error);
-    alert("Xatolik yuz berdi");
+  .catch(err => {
+    console.error(err);
+    alert("Server xatosi");
   });
 }
 
