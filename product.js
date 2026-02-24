@@ -104,19 +104,16 @@ function closePopup(){
    BUYURTMA YUBORISH
 ========================= */
 
-let selectedProduct = null;
-
-function openOrderModal(product) {
-  selectedProduct = product;
-  document.getElementById("orderModal").style.display = "flex";
-}
 
 function closeModal() {
   document.getElementById("orderModal").style.display = "none";
 }
 
 function submitOrder() {
-  const phoneInput = document.getElementById("phone");
+
+  const phoneInput = document.getElementById("phoneInput");
+  if(!phoneInput) return;
+
   const phone = phoneInput.value.trim();
 
   if (!phone) {
@@ -124,29 +121,26 @@ function submitOrder() {
     return;
   }
 
-  if (!selectedProduct) {
+  if (!window.currentProduct) {
     alert("Mahsulot topilmadi");
     return;
   }
 
   const data = {
-    product: selectedProduct.name,
-    price: selectedProduct.price,
+    product: window.currentProduct.name,
+    price: window.currentProduct.price,
     phone: phone
   };
 
   fetch("/send-order", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   })
   .then(res => res.json())
-  .then(res => {
-    alert("Buyurtma yuborildi");
-    closeModal();
-    phoneInput.value = "";
+  .then(() => {
+    document.getElementById("orderForm").style.display = "none";
+    document.getElementById("orderSuccess").style.display = "block";
   })
   .catch(err => {
     console.error(err);
