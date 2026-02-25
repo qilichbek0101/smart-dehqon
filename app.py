@@ -27,3 +27,6 @@ app.register_blueprint(orders_bp)
 @app.route("/")
 def home():
     return app.send_static_file("index.html")
+
+    from routes.products import products_bp
+app.register_blueprint(products_bp)
