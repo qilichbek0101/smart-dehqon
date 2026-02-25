@@ -3,7 +3,7 @@ from models import Product
 
 products_bp = Blueprint("products", __name__)
 
-@products_bp.route("/products", methods=["GET"])
+@products_bp.routes("/products", methods=["GET"])
 def get_products():
     products = Product.query.all()
 
