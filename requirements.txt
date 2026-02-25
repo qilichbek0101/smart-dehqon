@@ -1,5 +1,6 @@
-requests
-psycopg2-binary
 flask
 flask_sqlalchemy
+flask-cors
+psycopg2-binary
+requests
 gunicorn
