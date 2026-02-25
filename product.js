@@ -110,10 +110,7 @@ document.addEventListener("DOMContentLoaded", renderProducts);
 
 
 function submitOrder() {
-
   const phoneInput = document.getElementById("phoneInput");
-  if(!phoneInput) return;
-
   const phone = phoneInput.value.trim();
 
   if (!phone) {
@@ -134,16 +131,17 @@ function submitOrder() {
 
   fetch("/send-order", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify(data)
   })
   .then(res => res.json())
   .then(() => {
-    document.getElementById("orderForm").style.display = "none";
-    document.getElementById("orderSuccess").style.display = "block";
+    alert("Buyurtma yuborildi");
+    closePopup();
   })
-  .catch(err => {
-    console.error(err);
+  .catch(() => {
     alert("Server xatosi");
   });
 }

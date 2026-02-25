@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"name": "smartdehqon_bot",
+			"path": "../smartdehqon_bot"
+		},
+		{
+			"name": "smart dehqon",
+			"path": "."
+		}
+	],
+	"settings": {
+		"liveServer.settings.port": 5501,
+		"liveServer.settings.multiRootWorkspaceName": "smart dehqon"
+	}
+}
