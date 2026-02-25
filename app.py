@@ -1,3 +1,4 @@
+from routes.products import products_bp
 from flask import Flask
 from flask_cors import CORS
 from config import Config
@@ -30,3 +31,4 @@ def home():
 
     from routes.products import products_bp
 app.register_blueprint(products_bp)
+# app.register_blueprint(products_bp)
