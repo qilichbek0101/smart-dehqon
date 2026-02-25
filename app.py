@@ -3,16 +3,25 @@ from flask_cors import CORS
 from config import Config
 from extensions import db
 from routes.orders import orders_bp
+from models import Product
 
 app = Flask(__name__, static_folder=".", static_url_path="")
 app.config.from_object(Config)
 
 CORS(app)
-
 db.init_app(app)
 
+# 🔴 MUHIM: app context ichida
 with app.app_context():
     db.create_all()
+
+    # --- SEED ---
+    if Product.query.count() == 0:
+        db.session.add(Product(name="Pomidor", price=25000, image="/image/pomidor.jpeg"))
+        db.session.add(Product(name="Piyoz", price=15000, image="/image/piyoz.jpeg"))
+        db.session.add(Product(name="Kartoshka", price=7000, image="/image/kartoshka.jpeg"))
+        db.session.commit()
+        print(">>> PRODUCTS SEEDED")
 
 app.register_blueprint(orders_bp)
 
@@ -22,16 +31,3 @@ def home():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
-
-    from models import Product
-from extensions import db
-
-with app.app_context():
-    db.create_all()
-
-    if Product.query.count() == 0:
-        db.session.add(Product(name="Pomidor", price=25000, image="/image/pomidor.jpeg"))
-        db.session.add(Product(name="Piyoz", price=15000, image="/image/piyoz.jpeg"))
-        db.session.add(Product(name="Kartoshka", price=7000, image="/image/kartoshka.jpeg"))
-        db.session.commit()
-        print(">>> PRODUCTS SEEDED")
