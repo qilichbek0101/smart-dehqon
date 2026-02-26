@@ -14,3 +14,9 @@ class Order(db.Model):
     price = db.Column(db.Integer)
     phone = db.Column(db.String(50))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    class PriceHistory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    product_name = db.Column(db.String(100))
+    price = db.Column(db.Integer)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
