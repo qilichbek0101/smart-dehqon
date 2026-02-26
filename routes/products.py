@@ -1,3 +1,4 @@
+from models import PriceHistory
 from flask import Blueprint, jsonify
 from models import Product
 
@@ -29,5 +30,6 @@ def price_stats(name):
         }
         for p in data
     ])
+    
 
     
