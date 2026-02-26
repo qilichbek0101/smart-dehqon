@@ -13,7 +13,6 @@ app.config.from_object(Config)
 CORS(app)
 db.init_app(app)
 
-# DB create + seed
 with app.app_context():
     db.create_all()
 
@@ -22,20 +21,14 @@ with app.app_context():
         db.session.add(Product(name="Piyoz", price=15000, image="/image/piyoz.jpeg"))
         db.session.add(Product(name="Kartoshka", price=7000, image="/image/kartoshka.jpeg"))
         db.session.commit()
-        print(">>> SEEDED")
+        print("SEEDED")
 
-# 🔴 BLUEPRINTLAR
 app.register_blueprint(orders_bp)
 app.register_blueprint(products_bp)
 
-# static
 @app.route("/")
 def home():
     return app.send_static_file("index.html")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
-
-    @app.route("/test")
-def test():
-    return "WORKING"

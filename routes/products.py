@@ -1,12 +1,19 @@
-from extensions import db
 from flask import Blueprint, jsonify
+from models import Product
 
 products_bp = Blueprint("products", __name__)
 
 @products_bp.route("/products", methods=["GET"])
 def get_products():
-    return jsonify({"status": "ok"})
+    products = Product.query.all()
 
-    @products_bp.route("/products-test")
-def test_products():
-    return "PRODUCT ROUTE"
+    return jsonify([
+        {
+            "id": p.id,
+            "name": p.name,
+            "price": p.price,
+            "image": p.image,
+            "unit": p.unit
+        }
+        for p in products
+    ])

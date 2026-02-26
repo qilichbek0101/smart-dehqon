@@ -2,7 +2,7 @@ let selectedProduct = null;
 
 // 🔴 DBdan mahsulot olish
 function renderProducts() {
-  fetch("/products")
+  fetch("https://smart-dehqon.onrender.com/products")
     .then(res => res.json())
     .then(products => {
 
@@ -51,7 +51,7 @@ function submitOrder(){
     phone: phone
   };
 
-  fetch("/send-order", {
+fetch("https://smart-dehqon.onrender.com/send-order",  {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify(data)
