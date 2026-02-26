@@ -8,7 +8,6 @@ class Product(db.Model):
     image = db.Column(db.String(300))
     unit = db.Column(db.String(20), default="kg")
 
-
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product = db.Column(db.String(100))
