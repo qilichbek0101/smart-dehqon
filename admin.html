@@ -12,19 +12,23 @@
  
 
   </div>
-</div>
+
 <body>
   
-  <a href="index.html" class="home-btn">← Bosh sahifa</a>
-  
-<a href="products.html" class="home-btn">Mahsulotlar</a>
- 
-<header class="header">
-    <a href="index.html" class="home-btn">← Bosh sahifa</a>
-    <div class="admin-tabs">
-    </div>
-  <a href="products.html" class="admin-btn">Mahsulotlar</a>
-  <!-- <a href="#" class="orders-btn" onclick="openOrders()">Buyurtmalar</a> -->
+  <div class="admin-header">
+
+  <div class="left">
+    <a href="index.html" class="btn">← Bosh sahifa</a>
+  </div>
+
+  <div class="right">
+    <a href="/orders/export" class="btn excel">Excel yuklash</a>
+    <a href="products.html" class="btn">Mahsulotlar</a>
+  </div>
+
+</div>
+
+
   
   
   <div class="header-container">
@@ -36,6 +40,40 @@
   </div>
   
 </header>
+
+<div class="stats">
+
+  <div class="stat">
+    <h3 id="totalOrders">0</h3>
+    <p>Jami buyurtmalar</p>
+  </div>
+
+  <div class="stat">
+    <h3 id="todayOrders">0</h3>
+    <p>Bugungi buyurtmalar</p>
+  </div>
+
+  <div class="stat">
+    <h3 id="totalRevenue">0</h3>
+    <p>Jami summa</p>
+  </div>
+
+</div>
+<table class="orders-table">
+
+<thead>
+<tr>
+<th>ID</th>
+<th>Mahsulot</th>
+<th>Narx</th>
+<th>Telefon</th>
+<th>Sana</th>
+</tr>
+</thead>
+
+<tbody id="ordersTable"></tbody>
+
+</table>
 
 <section class="hero">
   <h2>Mahsulot qo‘shish</h2>

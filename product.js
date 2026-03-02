@@ -14,7 +14,7 @@ container.innerHTML = "";
 
 products.forEach(p => {
 container.innerHTML += `
-<div class="card">
+<div class="product-card">
 <img src="${p.image}">
 <h3>${p.name}</h3>
 <p>${p.price} so'm / ${p.unit}</p>

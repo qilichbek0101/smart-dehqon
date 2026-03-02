@@ -1,11 +1,14 @@
-from models import PriceHistory
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from models import Product
+from extensions import db
 
 products_bp = Blueprint("products", __name__)
 
+
+# 🔹 mahsulotlarni olish
 @products_bp.route("/products", methods=["GET"])
 def get_products():
+
     products = Product.query.all()
 
     return jsonify([
@@ -19,17 +22,29 @@ def get_products():
         for p in products
     ])
 
-    @products_bp.route("/price-stats/<name>")
-def price_stats(name):
-    data = PriceHistory.query.filter_by(product_name=name).all()
 
-    return jsonify([
-        {
-            "price": p.price,
-            "date": p.created_at.strftime("%d-%m")
-        }
-        for p in data
-    ])
-    
+# 🔹 mahsulot qo‘shish
+@products_bp.route("/add-product", methods=["POST"])
+def add_product():
 
-    
+    data = request.get_json()
+
+    name = data.get("name")
+    price = data.get("price")
+    unit = data.get("unit")
+    image = data.get("image")
+
+    if not name or not price:
+        return jsonify({"error":"missing fields"}),400
+
+    product = Product(
+        name=name,
+        price=price,
+        unit=unit,
+        image=image
+    )
+
+    db.session.add(product)
+    db.session.commit()
+
+    return jsonify({"status":"ok"})

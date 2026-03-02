@@ -3,6 +3,9 @@ from extensions import db
 from models import Order
 import os
 import requests
+from flask import send_file
+import openpyxl
+from io import BytesIO
 
 orders_bp = Blueprint("orders", __name__)
 
@@ -64,3 +67,68 @@ def get_orders():
         }
         for o in orders
     ])
+
+    @orders_bp.route("/orders/export", methods=["GET"])
+def export_orders():
+
+    orders = Order.query.order_by(Order.id.desc()).all()
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Orders"
+
+    ws.append(["ID", "Product", "Price", "Phone", "Date"])
+
+    for o in orders:
+        ws.append([
+            o.id,
+            o.product,
+            o.price,
+            o.phone,
+            o.created_at.strftime("%Y-%m-%d %H:%M")
+        ])
+
+    file = BytesIO()
+    wb.save(file)
+    file.seek(0)
+
+    return send_file(
+        file,
+        as_attachment=True,
+        download_name="orders.xlsx",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+    from flask import send_file
+import openpyxl
+from io import BytesIO
+from models import Order
+
+@app.route("/export-orders")
+def export_orders():
+
+    orders = Order.query.all()
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+
+    ws.append(["ID", "Mahsulot", "Telefon", "Narx", "Sana"])
+
+    for o in orders:
+        ws.append([
+            o.id,
+            o.product,
+            o.phone,
+            o.price,
+            o.created_at
+        ])
+
+    file = BytesIO()
+    wb.save(file)
+    file.seek(0)
+
+    return send_file(
+        file,
+        download_name="orders.xlsx",
+        as_attachment=True
+    )
