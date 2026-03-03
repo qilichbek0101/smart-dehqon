@@ -362,230 +362,137 @@ function saveOrders(data){
    MAHSULOT QO‘SHISH
 ========================= */
 
+/* =========================
+   MAHSULOT QO‘SHISH (DB)
+========================= */
+
 function addProduct(){
 
-  const nameInput  = document.getElementById("name");
-  const priceInput = document.getElementById("price");
-  const unitInput  = document.getElementById("unit");
-  const fileInput  = document.getElementById("imageInput");
+  const name  = document.getElementById("name").value.trim();
+  const price = document.getElementById("price").value.trim();
+  const unit  = document.getElementById("unit").value;
+  const file  = document.getElementById("imageInput").files[0];
 
-  if(!nameInput || !priceInput || !unitInput || !fileInput) return;
-
-  const name  = nameInput.value.trim();
-  const price = priceInput.value.trim();
-  const unit  = unitInput.value;
-  const file  = fileInput.files[0];
-
-  if(!name || !price){
+  if(!name || !price || !file){
     alert("Ma'lumotlarni to‘liq kiriting");
     return;
   }
 
-  if(!file){
-    alert("Rasm tanlang");
-    return;
-  }
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("price", price);
+  formData.append("unit", unit);
+  formData.append("image", file);
 
-  const reader = new FileReader();
-
-  reader.onload = function(e){
-
-    const products = getProducts();
-
-    const product = {
-      id: Date.now(),
-      name,
-      price,
-      unit,
-      image: e.target.result
-    };
-
-    products.push(product);
-    saveProducts(products);
-
+  fetch("/add-product", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(() => {
     alert("Mahsulot qo‘shildi");
-
     renderAdminProducts();
-
-    nameInput.value = "";
-    priceInput.value = "";
-    fileInput.value = "";
-  }
-
-  reader.readAsDataURL(file);
+  });
 }
 
-
 /* =========================
-   ADMIN MAHSULOTLAR RO‘YXATI
+   MAHSULOTLARNI DB DAN OLISH
 ========================= */
 
 function renderAdminProducts(){
 
-  const box = document.getElementById("adminProducts");
-  if(!box) return;
+  fetch("/products")
+  .then(res => res.json())
+  .then(products => {
 
-  const products = getProducts();
+    const box = document.getElementById("adminProducts");
+    if(!box) return;
 
-  box.innerHTML = "";
+    box.innerHTML = "";
 
-  products.reverse().forEach(p => {
+    products.reverse().forEach(p => {
 
-    box.innerHTML += `
-      <div style="
-        background:white;
-        padding:10px;
-        margin:10px 0;
-        border-radius:10px;
-        display:flex;
-        align-items:center;
-        gap:10px;
-      ">
-        <img src="${p.image}" width="60" height="60"
-             style="object-fit:cover;border-radius:8px;">
-        
-        <div style="flex:1">
-          <b>${p.name}</b><br>
-          ${p.price} so'm / ${p.unit}
+      box.innerHTML += `
+        <div style="
+          background:white;
+          padding:10px;
+          margin:10px 0;
+          border-radius:10px;
+          display:flex;
+          align-items:center;
+          gap:10px;
+        ">
+          <img src="${p.image}" width="60" height="60"
+               style="object-fit:cover;border-radius:8px;">
+          
+          <div style="flex:1">
+            <b>${p.name}</b><br>
+            ${p.price} so'm / ${p.unit}
+          </div>
         </div>
+      `;
+    });
 
-        <button onclick="deleteProduct(${p.id})"
-          style="background:red;color:white;border:none;
-          padding:6px 10px;border-radius:6px;">
-          O‘chirish
-        </button>
-      </div>
-    `;
   });
 }
 
-function deleteProduct(id){
-
-  let products = getProducts();
-  products = products.filter(p => p.id !== id);
-  saveProducts(products);
-
-  renderAdminProducts();
-}
-
-
 /* =========================
-   ORDER PANEL
-========================= */
-
-function showAdd(){
-  const add = document.getElementById("addSection");
-  const orders = document.getElementById("ordersSection");
-
-  if(add) add.style.display = "block";
-  if(orders) orders.style.display = "none";
-}
-
-function showOrders(){
-  const add = document.getElementById("addSection");
-  const orders = document.getElementById("ordersSection");
-
-  if(add) add.style.display = "none";
-  if(orders) orders.style.display = "block";
-
-  renderOrders();
-}
-
-
-/* =========================
-   ORDER RENDER
+   BUYURTMALARNI DB DAN OLISH
 ========================= */
 
 function renderOrders(){
 
-  const container = document.getElementById("ordersList");
-  if(!container) return;
+  fetch("/orders")
+  .then(res => res.json())
+  .then(orders => {
 
-  const orders = getOrders();
+    const container = document.getElementById("ordersList");
+    if(!container) return;
 
-  container.innerHTML = "";
+    container.innerHTML = "";
 
-  orders.slice().reverse().forEach(o => {
+    orders.reverse().forEach(o => {
 
-    const doneText = o.status === "done"
-      ? "<span style='color:green'>✔ Qabul qilindi</span>"
-      : "";
+      container.innerHTML += `
+        <div class="order-item">
 
-    container.innerHTML += `
-      <div class="order-item">
+          <b>${o.product}</b><br>
+          ${o.price} so'm<br>
+          📞 ${o.phone}<br>
+          <small>${o.created_at}</small>
 
-        <b>${o.product}</b><br>
-        ${o.price}<br>
-        📞 ${o.phone}<br>
-        <small>${o.date}</small><br>
-        ${doneText}
+          <div style="margin-top:8px;">
+            <a href="tel:${o.phone}" class="call-btn">
+              Qo‘ng‘iroq
+            </a>
+          </div>
 
-        <div style="margin-top:8px;display:flex;gap:8px;">
-          <a href="tel:${o.phone}" class="call-btn">Qo‘ng‘iroq</a>
-
-          <button onclick="markDone(${o.id})"
-            class="done-btn">Qabul qilindi</button>
-
-          <button onclick="deleteOrder(${o.id})"
-            class="del-btn">O‘chirish</button>
         </div>
+      `;
+    });
 
-      </div>
-    `;
   });
 }
 
-
 /* =========================
-   ORDER ACTIONS
+   PANEL SWITCH
 ========================= */
 
-function deleteOrder(id){
+function showAdd(){
+  document.getElementById("addSection").style.display = "block";
+  document.getElementById("ordersSection").style.display = "none";
+}
 
-  let orders = getOrders();
-  orders = orders.filter(o => o.id !== id);
-  saveOrders(orders);
-
+function showOrders(){
+  document.getElementById("addSection").style.display = "none";
+  document.getElementById("ordersSection").style.display = "block";
   renderOrders();
 }
-
-function markDone(id){
-
-  let orders = getOrders();
-
-  orders = orders.map(o=>{
-    if(o.id === id){
-      o.status = "done";
-    }
-    return o;
-  });
-
-  saveOrders(orders);
-  renderOrders();
-}
-
-
-/* =========================
-   MODAL
-========================= */
-
-function openOrders(){
-  const modal = document.getElementById("ordersModal");
-  if(modal){
-    modal.style.display = "flex";
-    renderOrders();
-  }
-}
-
-function closeOrders(){
-  const modal = document.getElementById("ordersModal");
-  if(modal){
-    modal.style.display = "none";
-  }
-}
-
 
 /* =========================
    INIT
 ========================= */
 
+document.addEventListener("DOMContentLoaded", function(){
+  renderAdminProducts();
+});
