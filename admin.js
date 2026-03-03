@@ -589,36 +589,3 @@ function closeOrders(){
    INIT
 ========================= */
 
-function addProduct(){
-
-const name = document.getElementById("name").value
-const price = document.getElementById("price").value
-const unit = document.getElementById("unit").value
-const image = document.getElementById("imageInput").value
-
-fetch("https://smart-dehqon.onrender.com/add-product",{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-name:name,
-price:price,
-unit:unit,
-image:image
-})
-
-})
-.then(res=>res.json())
-.then(data=>{
-
-alert("Mahsulot qo'shildi")
-
-location.reload()
-
-})
-
-}

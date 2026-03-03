@@ -1,116 +1,152 @@
 let selectedProduct = null;
+let priceChart = null;
 
 /* ===============================
    MAHSULOTLARNI CHIQARISH
 ================================ */
-function renderProducts() {
 
-fetch("https://smart-dehqon.onrender.com/products")
-.then(res => res.json())
-.then(products => {
+async function renderProducts() {
+  try {
+    const res = await fetch("/products");
+    const products = await res.json();
 
-const container = document.getElementById("products");
-container.innerHTML = "";
+    const container = document.getElementById("products");
+    if (!container) return;
 
-products.forEach(p => {
-container.innerHTML += `
-<div class="product-card">
-<img src="${p.image}">
-<h3>${p.name}</h3>
-<p>${p.price} so'm / ${p.unit}</p>
+    container.innerHTML = "";
 
-<button onclick='openOrder(${JSON.stringify(p)})'>
-Buyurtma berish
-</button>
-</div>
-`;
-});
+    products.forEach(p => {
 
-});
+      const card = document.createElement("div");
+      card.className = "product-card";
+
+      card.innerHTML = `
+        <img src="${p.image}" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <p>${p.price} so'm / ${p.unit}</p>
+        <button class="order-btn">Buyurtma berish</button>
+      `;
+
+      card.querySelector(".order-btn")
+          .addEventListener("click", () => openOrder(p));
+
+      container.appendChild(card);
+    });
+
+  } catch (err) {
+    console.error("Mahsulot yuklashda xatolik:", err);
+  }
 }
 
 /* ===============================
    NARX GRAFIK
 ================================ */
-function loadChart(productName){
 
-fetch(`https://smart-dehqon.onrender.com/price-stats/${productName}`)
-.then(r=>r.json())
-.then(data=>{
+async function loadChart(productName) {
+  try {
 
-if(data.length === 0) return;
+    const res = await fetch(`/price-stats/${productName}`);
+    const data = await res.json();
 
-const labels = data.map(d=>d.date);
-const prices = data.map(d=>d.price);
+    if (!data.length) return;
 
-const ctx = document.getElementById("priceChart");
+    const labels = data.map(d => d.date);
+    const prices = data.map(d => d.price);
 
-if(!ctx) return;
+    const ctx = document.getElementById("priceChart");
+    if (!ctx) return;
 
-new Chart(ctx, {
-type: "line",
-data: {
-labels: labels,
-datasets: [{
-label: "Narx o‘zgarishi",
-data: prices,
-borderWidth: 2
-}]
-}
-});
+    // Eski grafikni o‘chirish
+    if (priceChart) {
+      priceChart.destroy();
+    }
 
-});
+    priceChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          label: "Narx o‘zgarishi",
+          data: prices,
+          borderWidth: 2
+        }]
+      }
+    });
+
+  } catch (err) {
+    console.error("Grafik yuklashda xatolik:", err);
+  }
 }
 
 /* ===============================
    BUYURTMA OCHISH
 ================================ */
-function openOrder(product){
 
-selectedProduct = product;
+function openOrder(product) {
+  selectedProduct = product;
 
-document.getElementById("popup").style.display = "flex";
+  const popup = document.getElementById("popup");
+  if (popup) popup.style.display = "flex";
 
-// grafik yuklash
-loadChart(product.name);
+  loadChart(product.name);
 }
 
 /* ===============================
    POPUP YOPISH
 ================================ */
-function closePopup(){
-document.getElementById("popup").style.display = "none";
-document.getElementById("phoneInput").value = "";
+
+function closePopup() {
+  const popup = document.getElementById("popup");
+  if (popup) popup.style.display = "none";
+
+  const phoneInput = document.getElementById("phoneInput");
+  if (phoneInput) phoneInput.value = "";
 }
 
 /* ===============================
    BUYURTMA YUBORISH
 ================================ */
-function submitOrder(){
 
-const phone = document.getElementById("phoneInput").value.trim();
+async function submitOrder() {
 
-if(!phone){
-alert("Telefon kiriting");
-return;
+  const phoneInput = document.getElementById("phoneInput");
+  if (!phoneInput) return;
+
+  const phone = phoneInput.value.trim();
+
+  if (!phone) {
+    alert("Telefon kiriting");
+    return;
+  }
+
+  const data = {
+    product: selectedProduct.name,
+    price: selectedProduct.price,
+    phone: phone
+  };
+
+  try {
+
+    const res = await fetch("/send-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+
+    if (result.status === "ok") {
+      alert("Buyurtma yuborildi");
+      closePopup();
+    }
+
+  } catch (err) {
+    console.error("Buyurtma yuborishda xatolik:", err);
+  }
 }
 
-const data = {
-product: selectedProduct.name,
-price: selectedProduct.price,
-phone: phone
-};
-
-fetch("https://smart-dehqon.onrender.com/send-order",  {
-method: "POST",
-headers: {"Content-Type": "application/json"},
-body: JSON.stringify(data)
-})
-.then(res => res.json())
-.then(() => {
-alert("Buyurtma yuborildi");
-closePopup();
-});
-}
+/* ===============================
+   INIT
+================================ */
 
 document.addEventListener("DOMContentLoaded", renderProducts);

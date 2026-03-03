@@ -1,14 +1,17 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_file
 from extensions import db
 from models import Order
 import os
 import requests
-from flask import send_file
 import openpyxl
 from io import BytesIO
 
 orders_bp = Blueprint("orders", __name__)
 
+
+# ==============================
+# BUYURTMA YUBORISH
+# ==============================
 @orders_bp.route("/send-order", methods=["POST"])
 def send_order():
     data = request.get_json()
@@ -32,7 +35,7 @@ def send_order():
     db.session.add(new_order)
     db.session.commit()
 
-    # Telegram
+    # Telegram xabar
     TOKEN = os.environ.get("BOT_TOKEN")
     CHAT_ID = os.environ.get("CHAT_ID")
 
@@ -44,15 +47,21 @@ Mahsulot: {product}
 Narx: {price}
 Telefon: {phone}
 """
-        requests.post(
-            f"https://api.telegram.org/bot{TOKEN}/sendMessage",
-            json={"chat_id": CHAT_ID, "text": text},
-            timeout=5
-        )
+        try:
+            requests.post(
+                f"https://api.telegram.org/bot{TOKEN}/sendMessage",
+                json={"chat_id": CHAT_ID, "text": text},
+                timeout=5
+            )
+        except:
+            pass
 
     return jsonify({"status": "ok"})
 
 
+# ==============================
+# BUYURTMALAR RO‘YXATI
+# ==============================
 @orders_bp.route("/orders", methods=["GET"])
 def get_orders():
     orders = Order.query.order_by(Order.id.desc()).all()
@@ -68,7 +77,11 @@ def get_orders():
         for o in orders
     ])
 
-    @orders_bp.route("/orders/export", methods=["GET"])
+
+# ==============================
+# EXCEL EXPORT
+# ==============================
+@orders_bp.route("/orders/export", methods=["GET"])
 def export_orders():
 
     orders = Order.query.order_by(Order.id.desc()).all()
@@ -77,7 +90,7 @@ def export_orders():
     ws = wb.active
     ws.title = "Orders"
 
-    ws.append(["ID", "Product", "Price", "Phone", "Date"])
+    ws.append(["ID", "Mahsulot", "Narx", "Telefon", "Sana"])
 
     for o in orders:
         ws.append([
@@ -97,38 +110,4 @@ def export_orders():
         as_attachment=True,
         download_name="orders.xlsx",
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
-
-    from flask import send_file
-import openpyxl
-from io import BytesIO
-from models import Order
-
-@app.route("/export-orders")
-def export_orders():
-
-    orders = Order.query.all()
-
-    wb = openpyxl.Workbook()
-    ws = wb.active
-
-    ws.append(["ID", "Mahsulot", "Telefon", "Narx", "Sana"])
-
-    for o in orders:
-        ws.append([
-            o.id,
-            o.product,
-            o.phone,
-            o.price,
-            o.created_at
-        ])
-
-    file = BytesIO()
-    wb.save(file)
-    file.seek(0)
-
-    return send_file(
-        file,
-        download_name="orders.xlsx",
-        as_attachment=True
     )
