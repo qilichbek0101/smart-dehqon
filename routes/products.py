@@ -1,11 +1,16 @@
-from models import PriceHistory
 from flask import Blueprint, jsonify
-from models import Product
+from models import Product, PriceHistory
 
 products_bp = Blueprint("products", __name__)
 
-@products_bp.route("/products", methods=["GET"])
+
+# =========================
+# GET PRODUCTS
+# =========================
+
+@products_bp.route("/products")
 def get_products():
+
     products = Product.query.all()
 
     return jsonify([
@@ -19,7 +24,12 @@ def get_products():
         for p in products
     ])
 
-    @products_bp.route("/price-stats/<name>")
+
+# =========================
+# PRICE STATS
+# =========================
+
+@products_bp.route("/price-stats/<name>")
 def price_stats(name):
 
     data = PriceHistory.query.filter_by(product_name=name).all()
