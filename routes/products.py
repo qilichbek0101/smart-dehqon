@@ -83,3 +83,26 @@ def update_product(id):
     db.session.commit()
 
     return jsonify({"status": "updated"})
+from models import PriceHistory
+from flask import jsonify
+
+@products_bp.route("/price-stats/<name>")
+def price_stats(name):
+
+    data = PriceHistory.query.filter(
+        PriceHistory.product_name.ilike(name)
+    ).all()
+
+    result = []
+
+    for d in data:
+        result.append({
+            "price": d.price,
+            "date": d.created_at.strftime("%d-%m")
+        })
+
+    return jsonify(result)
+
+    print("PRODUCT NAME:", name)
+print("RESULT:", data)
+    

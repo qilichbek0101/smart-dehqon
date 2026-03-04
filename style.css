@@ -881,3 +881,7 @@ margin-top:50px;
 margin-bottom:20px;
 color:#333;
 }
+#priceChart{
+margin-top:15px;
+max-height:200px;
+}

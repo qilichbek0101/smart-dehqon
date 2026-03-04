@@ -1,180 +1,192 @@
-let selectedProduct = null;
-let priceChart = null;
+let selectedProduct = null
+let priceChart = null
+
 
 /* ===============================
    MAHSULOTLARNI CHIQARISH
 ================================ */
 
-async function renderProducts() {
-  try {
-    const res = await fetch("/products");
-    const products = await res.json();
+async function renderProducts(){
 
-    const container = document.getElementById("products");
-    if (!container) return;
+try{
 
-    container.innerHTML = "";
+const res = await fetch("/products")
+const products = await res.json()
 
-    products.forEach(p => {
+const container = document.getElementById("products")
 
-      const card = document.createElement("div");
-      card.className = "product-card";
+container.innerHTML=""
 
-      card.innerHTML = `
-        <img src="${p.image}" alt="${p.name}">
-        <h3>${p.name}</h3>
-        <p>${p.price} so'm / ${p.unit}</p>
-        <button class="order-btn">Buyurtma berish</button>
-      `;
+products.forEach(p=>{
 
-      card.querySelector(".order-btn")
-          .addEventListener("click", () => openOrder(p));
+const card = document.createElement("div")
+card.className="product-card"
 
-      container.appendChild(card);
-    });
+card.innerHTML=`
+<img src="${p.image}">
+<h3>${p.name}</h3>
+<p>${p.price} so'm / ${p.unit}</p>
+<button class="order-btn">Buyurtma berish</button>
+`
 
-  } catch (err) {
-    console.error("Mahsulot yuklashda xatolik:", err);
-  }
+card.querySelector(".order-btn")
+.addEventListener("click",()=>openOrder(p))
+
+container.appendChild(card)
+
+})
+
+}catch(err){
+
+console.error("Mahsulot yuklash xato:",err)
+
 }
+
+}
+
+
 
 /* ===============================
-   NARX GRAFIK
+   GRAFIK YUKLASH
 ================================ */
 
-async function loadChart(productName) {
-  try {
+async function loadChart(productName){
 
-    const res = await fetch(`/price-stats/${productName}`);
-    const data = await res.json();
+try{
 
-    if (!data.length) return;
+const res = await fetch("/price-stats/" + productName)
+const data = await res.json()
 
-    const labels = data.map(d => d.date);
-    const prices = data.map(d => d.price);
+if(!data.length) return
 
-    const ctx = document.getElementById("priceChart");
-    if (!ctx) return;
+const labels = data.map(d=>d.date)
+const prices = data.map(d=>d.price)
 
-    // Eski grafikni o‘chirish
-    if (priceChart) {
-      priceChart.destroy();
-    }
+const ctx = document.getElementById("priceChart")
 
-    priceChart = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels,
-        datasets: [{
-          label: "Narx o‘zgarishi",
-          data: prices,
-          borderWidth: 2
-        }]
-      }
-    });
-
-  } catch (err) {
-    console.error("Grafik yuklashda xatolik:", err);
-  }
+if(priceChart){
+priceChart.destroy()
 }
+
+priceChart = new Chart(ctx,{
+
+type:"line",
+
+data:{
+labels:labels,
+datasets:[{
+label:"Narx o'zgarishi",
+data:prices,
+borderColor:"#2e7d32",
+backgroundColor:"rgba(46,125,50,0.2)",
+borderWidth:3,
+tension:0.3
+}]
+},
+
+options:{
+responsive:true,
+scales:{
+y:{
+beginAtZero:false
+}
+}
+}
+
+})
+
+}catch(err){
+
+console.error("Grafik xato:",err)
+
+}
+
+}
+
+
 
 /* ===============================
-   BUYURTMA OCHISH
+   BUYURTMA POPUP
 ================================ */
 
-function openOrder(product) {
-  selectedProduct = product;
-  loadChart(product.name)
+function openOrder(product){
 
-  const popup = document.getElementById("popup");
-  if (popup) popup.style.display = "flex";
+selectedProduct = product
 
-  loadChart(product.name);
+document.getElementById("popup").style.display="flex"
+
+loadChart(product.name)
+
 }
+
+
 
 /* ===============================
    POPUP YOPISH
 ================================ */
 
-function closePopup() {
-  const popup = document.getElementById("popup");
-  if (popup) popup.style.display = "none";
+function closePopup(){
 
-  const phoneInput = document.getElementById("phoneInput");
-  if (phoneInput) phoneInput.value = "";
+document.getElementById("popup").style.display="none"
+
+document.getElementById("phoneInput").value=""
+
 }
+
+
 
 /* ===============================
    BUYURTMA YUBORISH
 ================================ */
 
-async function submitOrder() {
+async function submitOrder(){
 
-  const phoneInput = document.getElementById("phoneInput");
-  if (!phoneInput) return;
+const phone = document.getElementById("phoneInput").value.trim()
 
-  const phone = phoneInput.value.trim();
-
-  if (!phone) {
-    alert("Telefon kiriting");
-    return;
-  }
-
-  const data = {
-    product: selectedProduct.name,
-    price: selectedProduct.price,
-    phone: phone
-  };
-
-  try {
-
-    const res = await fetch("/send-order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
-
-    const result = await res.json();
-
-    if (result.status === "ok") {
-      alert("Buyurtma yuborildi");
-      closePopup();
-    }
-
-  } catch (err) {
-    console.error("Buyurtma yuborishda xatolik:", err);
-  }
+if(!phone){
+alert("Telefon kiriting")
+return
 }
+
+const data={
+product:selectedProduct.name,
+price:selectedProduct.price,
+phone:phone
+}
+
+try{
+
+const res = await fetch("/send-order",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify(data)
+
+})
+
+const result = await res.json()
+
+if(result.status==="ok"){
+alert("Buyurtma yuborildi")
+closePopup()
+}
+
+}catch(err){
+
+console.error("Buyurtma xato:",err)
+
+}
+
+}
+
+
 
 /* ===============================
    INIT
 ================================ */
 
-document.addEventListener("DOMContentLoaded", renderProducts);
-
-function loadChart(productName){
-
-fetch(`/price-stats/${productName}`)
-.then(res => res.json())
-.then(data => {
-
-const labels = data.map(d => d.date)
-const prices = data.map(d => d.price)
-
-const ctx = document.getElementById("priceChart")
-
-new Chart(ctx,{
-type:"line",
-data:{
-labels:labels,
-datasets:[{
-label:"Narx o‘zgarishi",
-data:prices,
-borderWidth:2
-}]
-}
-})
-
-})
-
-}
+document.addEventListener("DOMContentLoaded",renderProducts)
