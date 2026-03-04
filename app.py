@@ -2,12 +2,13 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from config import Config
 from extensions import db
-from models import Product
+from models import Product, PriceHistory
 from werkzeug.utils import secure_filename
 import os
 
 from routes.orders import orders_bp
 from routes.products import products_bp
+
 
 app = Flask(__name__, static_folder=".", static_url_path="")
 app.config.from_object(Config)
@@ -15,12 +16,14 @@ app.config.from_object(Config)
 CORS(app)
 db.init_app(app)
 
+
 # =====================
 # DB CREATE
 # =====================
 
 with app.app_context():
     db.create_all()
+
 
 # =====================
 # ADD PRODUCT
@@ -33,15 +36,6 @@ def add_product():
     price = request.form.get("price")
     unit = request.form.get("unit") or "kg"
     image = request.files.get("image")
-    
-    from models import PriceHistory
-
-history = PriceHistory(
-    product_name=name,
-    price=price
-)
-
-db.session.add(history)
 
     if not name or not price or not image:
         return jsonify({"error": "missing data"}), 400
@@ -60,6 +54,7 @@ db.session.add(history)
     image_path = os.path.join("image", filename)
     image.save(image_path)
 
+    # PRODUCT
     product = Product(
         name=name,
         price=price,
@@ -68,9 +63,19 @@ db.session.add(history)
     )
 
     db.session.add(product)
+
+    # PRICE HISTORY
+    history = PriceHistory(
+        product_name=name,
+        price=price
+    )
+
+    db.session.add(history)
+
     db.session.commit()
 
     return jsonify({"status": "ok"})
+
 
 # =====================
 # BLUEPRINTS
@@ -79,6 +84,7 @@ db.session.add(history)
 app.register_blueprint(orders_bp)
 app.register_blueprint(products_bp)
 
+
 # =====================
 # HOME
 # =====================
@@ -86,6 +92,7 @@ app.register_blueprint(products_bp)
 @app.route("/")
 def home():
     return app.send_static_file("index.html")
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
