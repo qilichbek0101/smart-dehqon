@@ -343,6 +343,16 @@
    LOCAL STORAGE HELPERS
 ========================= */
 
+if(localStorage.getItem("admin") !== "true"){
+window.location = "login.html"
+}
+function logout(){
+
+localStorage.removeItem("admin")
+
+window.location = "login.html"
+
+}
 function getProducts(){
   return JSON.parse(localStorage.getItem("products")) || [];
 }

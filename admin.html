@@ -24,10 +24,11 @@
   <div class="right">
     <a href="/orders/export" class="btn excel">Excel yuklash</a>
     <a href="products.html" class="btn">Mahsulotlar</a>
+    <button onclick="logout()" class="btn">Chiqish</button>
   </div>
 
 </div>
-
+  
 
   
   
@@ -40,7 +41,26 @@
   </div>
   
 </header>
+<section class="hero">
+  <h2>Mahsulot qo‘shish</h2>
+  <div id="adminProducts"></div>
 
+  <div class="admin-form">
+    <input type="text" id="name" placeholder="Mahsulot nomi">
+    <input type="text" id="price" placeholder="Narx">
+    <select id="unit">
+  <option value="kg">kg</option>
+  <option value="dona">dona</option>
+</select>
+    <input type="file" id="imageInput" accept="image/*">
+    <button onclick="addProduct()">Qo‘shish</button>
+    
+  </div>
+  
+<div id="ordersList"></div>
+
+<div id="ordersList" style="max-width:500px;margin:20px auto;"></div>
+</section>
 <div class="stats">
 
   <div class="stat">
@@ -75,26 +95,7 @@
 
 </table>
 
-<section class="hero">
-  <h2>Mahsulot qo‘shish</h2>
-  <div id="adminProducts"></div>
 
-  <div class="admin-form">
-    <input type="text" id="name" placeholder="Mahsulot nomi">
-    <input type="text" id="price" placeholder="Narx">
-    <select id="unit">
-  <option value="kg">kg</option>
-  <option value="dona">dona</option>
-</select>
-    <input type="file" id="imageInput" accept="image/*">
-    <button onclick="addProduct()">Qo‘shish</button>
-    
-  </div>
-  
-<div id="ordersList"></div>
-
-<div id="ordersList" style="max-width:500px;margin:20px auto;"></div>
-</section>
 <div id="ordersPanel" class="orders-panel">
   <!-- <h3>Buyurtmalar</h3> -->
   <div id="ordersList"></div>

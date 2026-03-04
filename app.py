@@ -33,6 +33,15 @@ def add_product():
     price = request.form.get("price")
     unit = request.form.get("unit") or "kg"
     image = request.files.get("image")
+    
+    from models import PriceHistory
+
+history = PriceHistory(
+    product_name=name,
+    price=price
+)
+
+db.session.add(history)
 
     if not name or not price or not image:
         return jsonify({"error": "missing data"}), 400

@@ -1,3 +1,4 @@
+from models import PriceHistory
 from flask import Blueprint, jsonify
 from models import Product
 
@@ -16,4 +17,17 @@ def get_products():
             "image": p.image
         }
         for p in products
+    ])
+
+    @products_bp.route("/price-stats/<name>")
+def price_stats(name):
+
+    data = PriceHistory.query.filter_by(product_name=name).all()
+
+    return jsonify([
+        {
+            "price": p.price,
+            "date": p.created_at.strftime("%d-%m")
+        }
+        for p in data
     ])

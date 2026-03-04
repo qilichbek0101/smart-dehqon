@@ -84,6 +84,7 @@ async function loadChart(productName) {
 
 function openOrder(product) {
   selectedProduct = product;
+  loadChart(product.name)
 
   const popup = document.getElementById("popup");
   if (popup) popup.style.display = "flex";
@@ -150,3 +151,30 @@ async function submitOrder() {
 ================================ */
 
 document.addEventListener("DOMContentLoaded", renderProducts);
+
+function loadChart(productName){
+
+fetch(`/price-stats/${productName}`)
+.then(res => res.json())
+.then(data => {
+
+const labels = data.map(d => d.date)
+const prices = data.map(d => d.price)
+
+const ctx = document.getElementById("priceChart")
+
+new Chart(ctx,{
+type:"line",
+data:{
+labels:labels,
+datasets:[{
+label:"Narx o‘zgarishi",
+data:prices,
+borderWidth:2
+}]
+}
+})
+
+})
+
+}
