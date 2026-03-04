@@ -41,3 +41,33 @@ def price_stats(name):
         }
         for p in data
     ])
+
+    @products_bp.route("/delete-product/<int:id>", methods=["DELETE"])
+def delete_product(id):
+
+    product = Product.query.get(id)
+
+    if not product:
+        return jsonify({"error":"not found"}),404
+
+    db.session.delete(product)
+    db.session.commit()
+
+    return jsonify({"status":"deleted"})
+    @products_bp.route("/update-product/<int:id>", methods=["PUT"])
+def update_product(id):
+
+    product = Product.query.get(id)
+
+    if not product:
+        return jsonify({"error":"not found"}),404
+
+    data = request.json
+
+    product.name = data["name"]
+    product.price = data["price"]
+    product.unit = data["unit"]
+
+    db.session.commit()
+
+    return jsonify({"status":"updated"})

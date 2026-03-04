@@ -411,41 +411,128 @@ function addProduct(){
 
 function renderAdminProducts(){
 
-  fetch("/products")
-  .then(res => res.json())
-  .then(products => {
+fetch("/products")
+.then(res => res.json())
+.then(products => {
 
-    const box = document.getElementById("adminProducts");
-    if(!box) return;
+const box = document.getElementById("adminProducts");
+box.innerHTML = "";
 
-    box.innerHTML = "";
+products.reverse().forEach(p => {
 
-    products.reverse().forEach(p => {
+box.innerHTML += `
+<div class="admin-product">
 
-      box.innerHTML += `
-        <div style="
-          background:white;
-          padding:10px;
-          margin:10px 0;
-          border-radius:10px;
-          display:flex;
-          align-items:center;
-          gap:10px;
-        ">
-          <img src="${p.image}" width="60" height="60"
-               style="object-fit:cover;border-radius:8px;">
-          
-          <div style="flex:1">
-            <b>${p.name}</b><br>
-            ${p.price} so'm / ${p.unit}
-          </div>
-        </div>
-      `;
-    });
+<img src="${p.image}" class="admin-img">
 
-  });
+<div class="admin-info">
+
+<h3>${p.name}</h3>
+<p>${p.price} so'm / ${p.unit}</p>
+
+</div>
+
+<div class="admin-actions">
+
+<button onclick="editProduct(${p.id},'${p.name}',${p.price},'${p.unit}')"
+class="edit-btn">
+Edit
+</button>
+
+<button onclick="deleteProduct(${p.id})"
+class="delete-btn">
+Delete
+</button>
+
+</div>
+
+</div>
+`;
+
+});
+
+});
 }
 
+// DELETE FUNKSIYASI//
+
+function renderAdminProducts(){
+
+fetch("/products")
+.then(res => res.json())
+.then(products => {
+
+const box = document.getElementById("adminProducts");
+box.innerHTML = "";
+
+products.reverse().forEach(p => {
+
+box.innerHTML += `
+<div class="admin-product">
+
+<img src="${p.image}" class="admin-img">
+
+<div class="admin-info">
+
+<h3>${p.name}</h3>
+<p>${p.price} so'm / ${p.unit}</p>
+
+</div>
+
+<div class="admin-actions">
+
+<button onclick="editProduct(${p.id},'${p.name}',${p.price},'${p.unit}')"
+class="edit-btn">
+Edit
+</button>
+
+<button onclick="deleteProduct(${p.id})"
+class="delete-btn">
+Delete
+</button>
+
+</div>
+
+</div>
+`;
+
+});
+
+});
+}
+
+// EDIT FUNKSIYASI//
+function editProduct(id,name,price,unit){
+
+const newName = prompt("Mahsulot nomi:",name);
+const newPrice = prompt("Narx:",price);
+const newUnit = prompt("Unit:",unit);
+
+if(!newName || !newPrice) return;
+
+fetch(`/update-product/${id}`,{
+
+method:"PUT",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+name:newName,
+price:newPrice,
+unit:newUnit
+})
+
+})
+.then(res=>res.json())
+.then(()=>{
+
+renderAdminProducts();
+
+});
+
+}
 /* =========================
    BUYURTMALARNI DB DAN OLISH
 ========================= */
