@@ -103,6 +103,4 @@ def price_stats(name):
 
     return jsonify(result)
 
-    print("PRODUCT NAME:", name)
-print("RESULT:", data)
-    
+ 
