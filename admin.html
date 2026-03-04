@@ -2,107 +2,151 @@
 <html lang="uz">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fermer paneli</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Inter&display=swap" rel="stylesheet">
+<title>Smart Dehqon | Fermer paneli</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Inter&display=swap" rel="stylesheet">
+
 </head>
+
 
 <body>
 
+<div class="container">
+
+
 <!-- HEADER -->
 
-<div class="admin-header">
+<header class="admin-header">
 
-  <div class="left">
-    <a href="index.html" class="btn">← Bosh sahifa</a>
-  </div>
+<div class="left">
+<a href="index.html" class="btn">← Bosh sahifa</a>
+</div>
 
-  <div class="right">
-    <a href="/orders/export" class="btn excel">Excel yuklash</a>
-    <a href="products.html" class="btn">Mahsulotlar</a>
-    <button onclick="logout()" class="btn">Chiqish</button>
-  </div>
+<div class="right">
+
+<a href="/orders/export" class="btn excel">
+Excel yuklash
+</a>
+
+<a href="products.html" class="btn">
+Mahsulotlar
+</a>
+
+<button onclick="logout()" class="btn logout">
+Chiqish
+</button>
 
 </div>
+
+</header>
+
 
 
 <!-- LOGO -->
 
 <div class="header-container">
-  <img src="image/logo3.jpg" class="logo">
 
-  <div class="brand-text">
-    <h1>Smart Dehqon</h1>
-    <p>Fermer paneli</p>
-  </div>
+<img src="image/logo3.jpg" class="logo">
+
+<div class="brand-text">
+
+<h1>Smart Dehqon</h1>
+<p>Fermer paneli</p>
+
+</div>
+
 </div>
 
 
-<!-- MAHSULOT QO'SHISH -->
 
-<section class="hero">
+<!-- MAHSULOT QO‘SHISH -->
 
-<h2>Mahsulot qo‘shish</h2>
+<section class="section">
+
+<h2 class="section-title">Mahsulot qo‘shish</h2>
 
 <div class="admin-form">
 
-<input type="text" id="name" placeholder="Mahsulot nomi">
+<input
+type="text"
+id="name"
+placeholder="Mahsulot nomi">
 
-<input type="number" id="price" placeholder="Narx">
+<input
+type="number"
+id="price"
+placeholder="Narx">
 
 <select id="unit">
+
 <option value="kg">kg</option>
 <option value="dona">dona</option>
+
 </select>
 
-<input type="file" id="imageInput" accept="image/*">
+<input
+type="file"
+id="imageInput"
+accept="image/*">
 
-<button onclick="addProduct()">Qo‘shish</button>
+<button onclick="addProduct()">
+Qo‘shish
+</button>
 
 </div>
 
 </section>
 
 
+
+
 <!-- STATISTIKA -->
 
-<div class="stats">
+<section class="section stats">
 
 <div class="stat">
+
 <h3 id="totalOrders">0</h3>
 <p>Jami buyurtmalar</p>
+
 </div>
 
 <div class="stat">
+
 <h3 id="todayOrders">0</h3>
 <p>Bugungi buyurtmalar</p>
+
 </div>
 
 <div class="stat">
+
 <h3 id="totalRevenue">0</h3>
 <p>Jami summa</p>
-</div>
 
 </div>
 
+</section>
 
-<!-- MAHSULOTLAR -->
 
-<h2 class="section-title">Mahsulotlar</h2>
-
-<div id="adminProducts"></div>
 
 
 <!-- BUYURTMALAR -->
 
-<h2 class="section-title">Buyurtmalar</h2>
+<section class="section">
+
+<h2 class="section-title">
+Buyurtmalar
+</h2>
 
 <table class="orders-table">
 
 <thead>
+
 <tr>
 <th>ID</th>
 <th>Mahsulot</th>
@@ -110,19 +154,37 @@
 <th>Telefon</th>
 <th>Sana</th>
 </tr>
+
 </thead>
 
 <tbody id="ordersTable"></tbody>
 
 </table>
 
+</section>
 
-<!-- MODAL -->
 
-<div id="ordersModal" class="modal"></div>
+
+
+<!-- MAHSULOTLAR -->
+
+<section class="section">
+
+<h2 class="section-title">
+Mahsulotlar
+</h2>
+
+<div id="adminProducts" class="products-admin-list"></div>
+
+</section>
+
+
+
+</div>
 
 
 <script src="admin.js"></script>
 
 </body>
+
 </html>

@@ -455,6 +455,24 @@ Delete
 }
 
 // DELETE FUNKSIYASI//
+function deleteProduct(id){
+
+if(!confirm("Mahsulotni o‘chirasizmi?")) return;
+
+fetch(`/delete-product/${id}`,{
+method:"DELETE"
+})
+.then(res => res.json())
+.then(data => {
+
+renderAdminProducts()
+
+})
+.catch(err=>{
+console.log(err)
+})
+
+}
 
 function renderAdminProducts(){
 
@@ -593,3 +611,41 @@ function showOrders(){
 document.addEventListener("DOMContentLoaded", function(){
   renderAdminProducts();
 });
+
+function loadStats(){
+
+fetch("/orders")
+.then(res=>res.json())
+.then(data=>{
+
+document.getElementById("totalOrders").innerText = data.length
+
+let today = 0
+let revenue = 0
+
+const todayDate = new Date().toISOString().slice(0,10)
+
+data.forEach(o=>{
+
+revenue += Number(o.price)
+
+if(o.created_at.startsWith(todayDate)){
+today++
+}
+
+})
+
+document.getElementById("todayOrders").innerText = today
+document.getElementById("totalRevenue").innerText = revenue
+
+})
+
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+renderAdminProducts()
+loadOrders()
+loadStats()
+
+})

@@ -1,53 +1,109 @@
 <!DOCTYPE html>
 <html lang="uz">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Mahsulotlar</title>
 
 <link rel="stylesheet" href="style.css">
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Inter&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
 
-<header class="header">
-  <a href="index.html" class="home-btn">← Bosh sahifa</a>
-  <a href="admin.html" class="admin-btn">Admin</a>
 
-  <div class="header-container">
-    <img src="image/logo3.jpg" class="logo">
-    <div class="brand-text">
-      <h1>Smart Dehqon</h1>
-      <p>Fermer va xaridorni bog‘laymiz</p>
-    </div>
-  </div>
+<!-- HEADER -->
+
+<header class="header">
+
+<a href="index.html" class="home-btn">
+← Bosh sahifa
+</a>
+
+<a href="admin.html" class="admin-btn">
+Admin
+</a>
+
+<div class="header-container">
+
+<img src="image/logo3.jpg" class="logo">
+
+<div class="brand-text">
+
+<h1>Smart Dehqon</h1>
+<p>Fermer va xaridorni bog‘laymiz</p>
+
+</div>
+
+</div>
+
 </header>
 
+
+
+<!-- MAHSULOTLAR -->
+
 <section class="products-preview">
-  <h2>Barcha mahsulotlar</h2>
-  <div class="products" id="products"></div>
+
+<h2>Barcha mahsulotlar</h2>
+
+<div class="products" id="products"></div>
+
 </section>
 
-<!-- POPUP -->
+
+
+<!-- BUYURTMA POPUP -->
+
 <div id="popup" class="popup">
-  <div class="popup-box">
-    <h3>Telefon raqamingiz</h3>
-    <input type="text" id="phoneInput" placeholder="+998901234567">
-    <canvas id="priceChart" style="margin-top:20px;"></canvas>
-    <div class="popup-actions">
-      <button onclick="submitOrder()">Yuborish</button>
-      <button class="secondary" onclick="closePopup()">Bekor</button>
-      <!-- <canvas id="priceChart" style="margin-top:20px;"></canvas>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
-    </div>
-    <canvas id="priceChart" style="margin-top:20px;"></canvas>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </div>
+
+<div class="popup-box">
+
+<h3>Telefon raqamingiz</h3>
+
+<input
+type="text"
+id="phoneInput"
+placeholder="+998901234567">
+
+<!-- NARX GRAFIK -->
+
+<canvas id="priceChart"></canvas>
+
+
+<div class="popup-actions">
+
+<button onclick="submitOrder()">
+Yuborish
+</button>
+
+<button
+class="secondary"
+onclick="closePopup()">
+
+Bekor
+
+</button>
+
 </div>
-<!-- <canvas id="priceChart"></canvas>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
-<script src="product.js"></script>
+
+</div>
+
+</div>
+
+
+
+<!-- SCRIPTS -->
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="product.js"></script>
+
 </body>
+
 </html>
