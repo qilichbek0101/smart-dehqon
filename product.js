@@ -26,7 +26,7 @@ card.className="product-card"
 card.innerHTML=`
 
 <img src="${p.image}">
-<h3>${p.name}</h3>
+<h3>${p.name.charAt(0).toUpperCase() + p.name.slice(1)}</h3>
 <p>${p.price} so'm / ${p.unit}</p>
 
 <div class="product-actions">
@@ -56,7 +56,6 @@ console.error("Mahsulot yuklash xato:",err)
 
 }
 
-
 /* ===============================
    CARD ICHIDA GRAFIK
 ================================ */
@@ -71,13 +70,40 @@ canvas.style.display="block"
 
 try{
 
+/* REAL PRICE HISTORY */
+
 const res = await fetch("/price-stats/" + product.name)
 const data = await res.json()
+
+/* AI PREDICTION */
+
+const predRes = await fetch("/price-predict/" + product.name)
+const predictions = await predRes.json()
 
 if(!data.length) return
 
 const labels = data.map(d=>d.date)
 const prices = data.map(d=>d.price)
+
+/* AI labels */
+
+let futureLabels = []
+
+for(let i=1;i<=predictions.length;i++){
+futureLabels.push("AI+"+i)
+}
+
+const allLabels = [...labels, ...futureLabels]
+
+/* DATASET */
+
+const historyDataset = prices
+
+const predictionDataset = new Array(prices.length-1).fill(null)
+predictionDataset.push(prices[prices.length-1])
+predictionDataset.push(...predictions)
+
+/* OLD CHART DESTROY */
 
 if(charts[product.id]){
 charts[product.id].destroy()
@@ -88,22 +114,42 @@ charts[product.id] = new Chart(canvas,{
 type:"line",
 
 data:{
-labels:labels,
-datasets:[{
-label:"Narx o'zgarishi",
-data:prices,
+labels:allLabels,
+datasets:[
+
+{
+label:"Real narx",
+data:historyDataset,
 borderColor:"#2e7d32",
 backgroundColor:"rgba(46,125,50,0.2)",
 borderWidth:3,
 tension:0.3
-}]
+},
+
+{
+label:"AI prognoz",
+data:predictionDataset,
+borderColor:"#ff9800",
+borderDash:[6,6],
+borderWidth:3,
+tension:0.3
+}
+
+]
 },
 
 options:{
 responsive:true,
+plugins:{
+legend:{
+display:true
+}
+},
 scales:{
 y:{
-beginAtZero:false
+beginAtZero:false,
+suggestedMin: Math.min(...prices) - 1000,
+suggestedMax: Math.max(...prices) + 2000
 }
 }
 }
@@ -124,7 +170,6 @@ canvas.style.display="none"
 
 }
 
-
 /* ===============================
    BUYURTMA POPUP
 ================================ */
@@ -132,11 +177,9 @@ canvas.style.display="none"
 function openOrder(product){
 
 selectedProduct = product
-
 document.getElementById("popup").style.display="flex"
 
 }
-
 
 /* ===============================
    POPUP YOPISH
@@ -145,11 +188,9 @@ document.getElementById("popup").style.display="flex"
 function closePopup(){
 
 document.getElementById("popup").style.display="none"
-
 document.getElementById("phoneInput").value=""
 
 }
-
 
 /* ===============================
    BUYURTMA YUBORISH
@@ -198,7 +239,6 @@ console.error("Buyurtma xato:",err)
 }
 
 }
-
 
 /* ===============================
    INIT

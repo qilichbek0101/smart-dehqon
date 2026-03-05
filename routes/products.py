@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify
 from models import Product, PriceHistory
+from extensions import db
+from ai_predict import predict_price
 
 products_bp = Blueprint("products", __name__)
 
@@ -7,7 +9,6 @@ products_bp = Blueprint("products", __name__)
 # =========================
 # PRODUCT LIST
 # =========================
-
 @products_bp.route("/products")
 def get_products():
 
@@ -28,22 +29,41 @@ def get_products():
 
 
 # =========================
-# PRICE GRAPH
+# PRICE HISTORY
 # =========================
-
 @products_bp.route("/price-stats/<name>")
 def price_stats(name):
 
     data = PriceHistory.query.filter_by(
         product_name=name
-    ).all()
+    ).order_by(PriceHistory.created_at).all()
 
     result = []
 
     for d in data:
         result.append({
-            "price": d.price,
+            "price": int(d.price),
             "date": d.created_at.strftime("%d-%m")
         })
 
     return jsonify(result)
+
+
+# =========================
+# AI PRICE PREDICTION
+# =========================
+@products_bp.route("/price-predict/<name>")
+def price_predict(name):
+
+    history = PriceHistory.query.filter_by(
+        product_name=name
+    ).all()
+
+    prices = [int(p.price) for p in history]
+
+    if len(prices) < 2:
+        return jsonify([])
+
+    predictions = predict_price(prices)
+
+    return jsonify(predictions)

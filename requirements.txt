@@ -5,3 +5,6 @@ psycopg2-binary
 requests
 gunicorn
 openpyxl
+pandas
+numpy
+scikit-learn
