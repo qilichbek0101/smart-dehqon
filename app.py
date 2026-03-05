@@ -37,41 +37,40 @@ def add_product():
     unit = request.form.get("unit") or "kg"
     image = request.files.get("image")
 
-    if not name or not price or not image:
+    if not name or not price:
         return jsonify({"error": "missing data"}), 400
 
-    try:
-        price = int(price)
-    except:
-        return jsonify({"error": "price must be number"}), 400
+    price = int(price)
 
-    # Papka mavjudligini tekshirish
-    if not os.path.exists("image"):
-        os.makedirs("image")
+    # mahsulot bor yoki yo'q tekshiramiz
+    product = Product.query.filter_by(name=name).first()
 
-    # Fayl nomini xavfsiz qilish
-    filename = secure_filename(image.filename)
-    image_path = os.path.join("image", filename)
-    image.save(image_path)
+    if not product:
 
-    # PRODUCT
-    product = Product(
-        name=name,
-        price=price,
-        unit=unit,
-        image=f"/image/{filename}"
-    )
+        filename = secure_filename(image.filename)
+        image_path = os.path.join("image", filename)
+        image.save(image_path)
 
-    db.session.add(product)
+        product = Product(
+            name=name,
+            unit=unit,
+            image=f"/image/{filename}",
+            price=price
+        )
 
-    # PRICE HISTORY
+        db.session.add(product)
+        db.session.commit()
+
+    else:
+        # mavjud mahsulot narxini yangilash
+        product.price = price
+
     history = PriceHistory(
         product_name=name,
         price=price
     )
 
     db.session.add(history)
-
     db.session.commit()
 
     return jsonify({"status": "ok"})
@@ -96,3 +95,4 @@ def home():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
