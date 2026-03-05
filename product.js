@@ -1,6 +1,5 @@
 let selectedProduct = null
-let priceChart = null
-
+let charts = {}
 
 /* ===============================
    MAHSULOTLARNI CHIQARISH
@@ -15,6 +14,8 @@ const products = await res.json()
 
 const container = document.getElementById("products")
 
+if(!container) return
+
 container.innerHTML=""
 
 products.forEach(p=>{
@@ -23,14 +24,25 @@ const card = document.createElement("div")
 card.className="product-card"
 
 card.innerHTML=`
+
 <img src="${p.image}">
 <h3>${p.name}</h3>
 <p>${p.price} so'm / ${p.unit}</p>
+
+<div class="product-actions">
+<button class="chart-btn">📈 Narx grafigi</button>
 <button class="order-btn">Buyurtma berish</button>
+</div>
+
+<canvas id="chart-${p.id}" style="display:none;height:200px;"></canvas>
+
 `
 
 card.querySelector(".order-btn")
 .addEventListener("click",()=>openOrder(p))
+
+card.querySelector(".chart-btn")
+.addEventListener("click",()=>toggleChart(p))
 
 container.appendChild(card)
 
@@ -45,16 +57,21 @@ console.error("Mahsulot yuklash xato:",err)
 }
 
 
-
 /* ===============================
-   GRAFIK YUKLASH
+   CARD ICHIDA GRAFIK
 ================================ */
 
-async function loadChart(productName){
+async function toggleChart(product){
+
+const canvas = document.getElementById(`chart-${product.id}`)
+
+if(canvas.style.display==="none"){
+
+canvas.style.display="block"
 
 try{
 
-const res = await fetch("/price-stats/" + productName)
+const res = await fetch("/price-stats/" + product.name)
 const data = await res.json()
 
 if(!data.length) return
@@ -62,13 +79,11 @@ if(!data.length) return
 const labels = data.map(d=>d.date)
 const prices = data.map(d=>d.price)
 
-const ctx = document.getElementById("priceChart")
-
-if(priceChart){
-priceChart.destroy()
+if(charts[product.id]){
+charts[product.id].destroy()
 }
 
-priceChart = new Chart(ctx,{
+charts[product.id] = new Chart(canvas,{
 
 type:"line",
 
@@ -101,8 +116,13 @@ console.error("Grafik xato:",err)
 
 }
 
+}else{
+
+canvas.style.display="none"
+
 }
 
+}
 
 
 /* ===============================
@@ -115,10 +135,7 @@ selectedProduct = product
 
 document.getElementById("popup").style.display="flex"
 
-loadChart(product.name)
-
 }
-
 
 
 /* ===============================
@@ -132,7 +149,6 @@ document.getElementById("popup").style.display="none"
 document.getElementById("phoneInput").value=""
 
 }
-
 
 
 /* ===============================
@@ -182,7 +198,6 @@ console.error("Buyurtma xato:",err)
 }
 
 }
-
 
 
 /* ===============================

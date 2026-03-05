@@ -885,3 +885,21 @@ color:#333;
 margin-top:15px;
 max-height:200px;
 }
+
+.product-actions{
+display:flex;
+gap:10px;
+margin-top:10px;
+}
+
+.chart-btn{
+background:#e8f5e9;
+border:none;
+padding:6px 10px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.chart-btn:hover{
+background:#c8e6c9;
+}
