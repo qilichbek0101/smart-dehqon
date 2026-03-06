@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from models import Product, PriceHistory
 from extensions import db
 from ai_predict import predict_price
@@ -67,3 +67,22 @@ def price_predict(name):
     predictions = predict_price(prices)
 
     return jsonify(predictions)
+
+
+# =========================
+# DELETE PRODUCT
+# =========================
+@products_bp.route("/delete-product/<int:id>", methods=["DELETE"])
+def delete_product(id):
+
+    product = Product.query.get(id)
+
+    if not product:
+        return jsonify({"error": "Product not found"}), 404
+
+    PriceHistory.query.filter_by(product_name=product.name).delete()
+
+    db.session.delete(product)
+    db.session.commit()
+
+    return jsonify({"status": "deleted"})       
