@@ -87,7 +87,7 @@ def delete_product(id):
 
     return jsonify({"status": "deleted"})   
 
-    @products_bp.route("/update-product/<int:id>", methods=["PUT"])
+@products_bp.route("/update-product/<int:id>", methods=["PUT"])
 def update_product(id):
 
     data = request.get_json()
@@ -103,4 +103,4 @@ def update_product(id):
 
     db.session.commit()
 
-    return jsonify({"status":"updated"})    
+    return jsonify({"status":"updated"})
