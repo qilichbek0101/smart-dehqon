@@ -40,7 +40,6 @@ def add_product():
     if not name or not price:
         return jsonify({"error": "missing data"}), 400
 
-    # nomni tozalash
     name = name.strip().title()
 
     try:
@@ -48,16 +47,14 @@ def add_product():
     except:
         return jsonify({"error": "price must be number"}), 400
 
-    # mahsulot mavjudligini tekshiramiz
     product = Product.query.filter_by(name=name).first()
 
-    # agar mahsulot yo'q bo'lsa
+    # yangi mahsulot
     if not product:
 
         if not image:
             return jsonify({"error": "image required"}), 400
 
-        # image papka bo'lmasa yaratamiz
         if not os.path.exists("image"):
             os.makedirs("image")
 
@@ -75,16 +72,28 @@ def add_product():
         db.session.add(product)
 
     else:
-        # mavjud mahsulot bo'lsa faqat narx yangilanadi
         product.price = price
 
-    # narx tarixini saqlaymiz
+    # =====================
+    # PRICE HISTORY
+    # =====================
+
     history = PriceHistory(
         product_name=name,
         price=price
     )
 
     db.session.add(history)
+    db.session.commit()
+
+    # faqat oxirgi 30 ta narxni qoldiramiz
+    old = PriceHistory.query.filter_by(product_name=name) \
+        .order_by(PriceHistory.created_at.desc()) \
+        .offset(30).all()
+
+    for r in old:
+        db.session.delete(r)
+
     db.session.commit()
 
     return jsonify({"status": "ok"})

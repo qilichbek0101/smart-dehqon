@@ -35,8 +35,8 @@ def get_products():
 def price_stats(name):
 
     data = PriceHistory.query.filter_by(
-        product_name=name
-    ).order_by(PriceHistory.created_at).all()
+    product_name=name
+).order_by(PriceHistory.created_at.desc()).limit(30).all()
 
     result = []
 
@@ -59,7 +59,7 @@ def price_predict(name):
         product_name=name
     ).all()
 
-    prices = [int(p.price) for p in history]
+    prices = [int(p.price) for p in history][-30:]
 
     if len(prices) < 2:
         return jsonify([])
@@ -104,3 +104,19 @@ def update_product(id):
     db.session.commit()
 
     return jsonify({"status":"updated"})
+
+@products_bp.route("/price-recommend/<name>")
+def price_recommend(name):
+
+    history = PriceHistory.query.filter_by(
+        product_name=name
+    ).order_by(PriceHistory.created_at).all()
+
+    prices = [int(p.price) for p in history][-30:]
+
+    if len(prices) < 3:
+        return jsonify({"recommend": prices[-1] if prices else 0})
+
+    rec = recommend_price(prices)
+
+    return jsonify({"recommend": rec})
