@@ -85,4 +85,22 @@ def delete_product(id):
     db.session.delete(product)
     db.session.commit()
 
-    return jsonify({"status": "deleted"})       
+    return jsonify({"status": "deleted"})   
+
+    @products_bp.route("/update-product/<int:id>", methods=["PUT"])
+def update_product(id):
+
+    data = request.get_json()
+
+    product = Product.query.get(id)
+
+    if not product:
+        return jsonify({"error":"Product not found"}),404
+
+    product.name = data.get("name", product.name)
+    product.price = int(data.get("price", product.price))
+    product.unit = data.get("unit", product.unit)
+
+    db.session.commit()
+
+    return jsonify({"status":"updated"})    

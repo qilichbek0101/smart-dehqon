@@ -187,7 +187,7 @@ fetch("/orders")
 .then(res=>res.json())
 .then(orders=>{
 
-const container = document.getElementById("ordersList")
+const container = document.getElementById("ordersTable")
 if(!container) return
 
 container.innerHTML=""
