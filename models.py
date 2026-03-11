@@ -1,5 +1,5 @@
 from extensions import db
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class Product(db.Model):
@@ -22,5 +22,7 @@ class PriceHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_name = db.Column(db.String(100))
     price = db.Column(db.Integer)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    datetime.utcnow() + timedelta(hours=5)
+    created_at = db.Column(
+        db.DateTime,
+        default=lambda: datetime.utcnow() + timedelta(hours=5)
+    )
