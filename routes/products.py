@@ -1,8 +1,7 @@
 from flask import Blueprint, jsonify, request
-from models import Product, PriceHistory
+from models import Product, PriceHistory, Order
 from extensions import db
-from ai_predict import predict_price
-from ai_predict import predict_price, crop_recommendation
+from ai_predict import predict_price, crop_recommendation, recommend_price
 
 products_bp = Blueprint("products", __name__)
 
@@ -13,11 +12,19 @@ products_bp = Blueprint("products", __name__)
 @products_bp.route("/products")
 def get_products():
 
-    products = Product.query.all()
+    products = Product.query.order_by(Product.id.desc()).all()
 
     result = []
+    seen = set()
 
     for p in products:
+
+        # duplicate mahsulotlarni chiqarib tashlaymiz
+        if p.name in seen:
+            continue
+
+        seen.add(p.name)
+
         result.append({
             "id": p.id,
             "name": p.name,
@@ -36,8 +43,8 @@ def get_products():
 def price_stats(name):
 
     data = PriceHistory.query.filter_by(
-    product_name=name
-).order_by(PriceHistory.created_at.desc()).limit(30).all()
+        product_name=name
+    ).order_by(PriceHistory.created_at.desc()).limit(30).all()
 
     result = []
 
@@ -71,41 +78,8 @@ def price_predict(name):
 
 
 # =========================
-# DELETE PRODUCT
+# PRICE RECOMMENDATION
 # =========================
-@products_bp.route("/delete-product/<int:id>", methods=["DELETE"])
-def delete_product(id):
-
-    product = Product.query.get(id)
-
-    if not product:
-        return jsonify({"error": "Product not found"}), 404
-
-    PriceHistory.query.filter_by(product_name=product.name).delete()
-
-    db.session.delete(product)
-    db.session.commit()
-
-    return jsonify({"status": "deleted"})   
-
-@products_bp.route("/update-product/<int:id>", methods=["PUT"])
-def update_product(id):
-
-    data = request.get_json()
-
-    product = Product.query.get(id)
-
-    if not product:
-        return jsonify({"error":"Product not found"}),404
-
-    product.name = data.get("name", product.name)
-    product.price = int(data.get("price", product.price))
-    product.unit = data.get("unit", product.unit)
-
-    db.session.commit()
-
-    return jsonify({"status":"updated"})
-
 @products_bp.route("/price-recommend/<name>")
 def price_recommend(name):
 
@@ -122,23 +96,61 @@ def price_recommend(name):
 
     return jsonify({"recommend": rec})
 
-    # =========================
+
+# =========================
+# DELETE PRODUCT
+# =========================
+@products_bp.route("/delete-product/<int:id>", methods=["DELETE"])
+def delete_product(id):
+
+    product = Product.query.get(id)
+
+    if not product:
+        return jsonify({"error": "Product not found"}), 404
+
+    PriceHistory.query.filter_by(product_name=product.name).delete()
+
+    db.session.delete(product)
+    db.session.commit()
+
+    return jsonify({"status": "deleted"})
+
+
+# =========================
+# UPDATE PRODUCT
+# =========================
+@products_bp.route("/update-product/<int:id>", methods=["PUT"])
+def update_product(id):
+
+    data = request.get_json()
+
+    product = Product.query.get(id)
+
+    if not product:
+        return jsonify({"error": "Product not found"}), 404
+
+    product.name = data.get("name", product.name)
+    product.price = int(data.get("price", product.price))
+    product.unit = data.get("unit", product.unit)
+
+    db.session.commit()
+
+    return jsonify({"status": "updated"})
+
+
+# =========================
 # CROP RECOMMENDATION
 # =========================
-
 @products_bp.route("/crop-recommendation")
 def crop_recommend():
-
-    from models import Order
 
     products = Product.query.all()
 
     orders = {}
-
     all_orders = Order.query.all()
 
     for o in all_orders:
-        orders[o.product] = orders.get(o.product,0) + 1
+        orders[o.product] = orders.get(o.product, 0) + 1
 
     rec = crop_recommendation(products, orders)
 

@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
+    name = db.Column(db.String(100), unique=True)
     price = db.Column(db.Integer)
     image = db.Column(db.String(300))
     unit = db.Column(db.String(20), default="kg")
