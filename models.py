@@ -23,4 +23,4 @@ class PriceHistory(db.Model):
     product_name = db.Column(db.String(100))
     price = db.Column(db.Integer)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    datetime.utcnow() → UTC+5
+    datetime.utcnow() + timedelta(hours=5)
