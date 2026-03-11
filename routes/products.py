@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from models import Product, PriceHistory
 from extensions import db
 from ai_predict import predict_price
+from ai_predict import predict_price, crop_recommendation
 
 products_bp = Blueprint("products", __name__)
 
@@ -120,3 +121,25 @@ def price_recommend(name):
     rec = recommend_price(prices)
 
     return jsonify({"recommend": rec})
+
+    # =========================
+# CROP RECOMMENDATION
+# =========================
+
+@products_bp.route("/crop-recommendation")
+def crop_recommend():
+
+    from models import Order
+
+    products = Product.query.all()
+
+    orders = {}
+
+    all_orders = Order.query.all()
+
+    for o in all_orders:
+        orders[o.product] = orders.get(o.product,0) + 1
+
+    rec = crop_recommendation(products, orders)
+
+    return jsonify(rec)

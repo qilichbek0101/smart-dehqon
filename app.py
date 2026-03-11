@@ -33,6 +33,7 @@ with app.app_context():
 def add_product():
 
     name = request.form.get("name")
+    name = name.strip().title()
     price = request.form.get("price")
     unit = request.form.get("unit") or "kg"
     image = request.files.get("image")

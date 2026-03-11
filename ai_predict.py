@@ -2,6 +2,10 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 
 
+# =========================
+# PRICE PREDICTION
+# =========================
+
 def predict_price(price_history):
 
     if len(price_history) < 2:
@@ -23,6 +27,28 @@ def predict_price(price_history):
     predictions = model.predict(future_X)
 
     return predictions.tolist()
+
+
+# =========================
+# CROP RECOMMENDATION
+# =========================
+
+def crop_recommendation(products, orders):
+
+    scores = {}
+
+    for p in products:
+
+        demand = orders.get(p.name, 0)
+        price = p.price
+
+        score = demand * 2 + price / 1000
+
+        scores[p.name] = score
+
+    best = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+
+    return best
 
 
 # =========================

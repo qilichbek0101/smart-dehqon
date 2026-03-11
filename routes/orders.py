@@ -111,3 +111,30 @@ def export_orders():
         download_name="orders.xlsx",
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+
+    # ======================
+# TOP PRODUCTS
+# ======================
+
+@orders_bp.route("/top-products")
+def top_products():
+
+    from sqlalchemy import func
+    from models import Order
+
+    data = db.session.query(
+        Order.product,
+        func.count(Order.id)
+    ).group_by(Order.product).all()
+
+    result = []
+
+    for product, count in data:
+        result.append({
+            "product": product,
+            "orders": count
+        })
+
+    result.sort(key=lambda x: x["orders"], reverse=True)
+
+    return jsonify(result)

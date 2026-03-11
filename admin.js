@@ -196,20 +196,23 @@ orders.reverse().forEach(o=>{
 
 container.innerHTML += `
 
-<div class="order-item">
+<tr>
 
-<b>${o.product}</b><br>
-${o.price} so'm<br>
-📞 ${o.phone}<br>
-<small>${o.created_at}</small>
+<td>${o.product}</td>
 
-<div style="margin-top:8px;">
-<a href="tel:${o.phone}" class="call-btn">
-Qo‘ng‘iroq
+<td>${o.price} so'm</td>
+
+<td>${o.phone}</td>
+
+<td>${o.created_at}</td>
+
+<td>
+<a href="tel:${o.phone}">
+<button class="call-btn">Qo'ng'iroq</button>
 </a>
-</div>
+</td>
 
-</div>
+</tr>
 
 `
 
@@ -265,4 +268,70 @@ renderAdminProducts()
 renderOrders()
 loadStats()
 
+loadTopProducts()
+loadCropRecommendation()
+
 })
+
+/* =========================
+   AI TOP PRODUCTS
+========================= */
+
+async function loadTopProducts(){
+
+try{
+
+const res = await fetch("/top-products")
+const data = await res.json()
+
+const box = document.getElementById("topProducts")
+
+if(!box) return
+
+box.innerHTML=""
+
+data.slice(0,5).forEach(p=>{
+
+box.innerHTML += `
+<li>${p.product} (${p.orders} buyurtma)</li>
+`
+
+})
+
+}catch(err){
+console.log(err)
+}
+
+}
+
+
+/* =========================
+   AI CROP RECOMMENDATION
+========================= */
+
+async function loadCropRecommendation(){
+
+try{
+
+const res = await fetch("/crop-recommendation")
+const data = await res.json()
+
+const box = document.getElementById("cropRecommend")
+
+if(!box) return
+
+box.innerHTML=""
+
+data.slice(0,5).forEach(p=>{
+
+box.innerHTML += `
+<li>${p[0]}</li>
+`
+
+})
+
+}catch(err){
+console.log(err)
+}
+
+}
