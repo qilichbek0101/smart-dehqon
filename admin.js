@@ -12,11 +12,16 @@
 // ======================
 
 if(localStorage.getItem("admin") !== "true"){
+  
   window.location = "login.html"
+}
+if(localStorage.getItem("role") !== "farmer"){
+  alert("Faqat fermerlar uchun")
+  window.location = "index.html"
 }
 
 function logout(){
-  localStorage.removeItem("admin")
+  localStorage.clear()
   window.location = "login.html"
 }
 
@@ -285,15 +290,48 @@ const res = await fetch("/top-products")
 const data = await res.json()
 
 const box = document.getElementById("topProducts")
-
 if(!box) return
 
 box.innerHTML=""
 
+// 🔥 DEMAND LOGIKA
+const max = Math.max(...data.map(i => i.orders))
+
+data.forEach(i => {
+  const ratio = i.orders / max
+
+  if(ratio >= 0.8){
+    i.demand = "high"
+  }
+  else if(ratio >= 0.5){
+    i.demand = "medium"
+  }
+  else{
+    i.demand = "low"
+  }
+})
+
+// 🔥 UI
 data.slice(0,5).forEach(p=>{
 
+let icon = ""
+let label = ""
+
+if(p.demand === "high"){
+  icon = "🔥"
+  label = "Yuqori talab"
+}
+else if(p.demand === "medium"){
+  icon = "⚖️"
+  label = "O‘rtacha"
+}
+else{
+  icon = "❄️"
+  label = "Past talab"
+}
+
 box.innerHTML += `
-<li>${p.product} (${p.orders} buyurtma)</li>
+<li>${icon} ${p.product} — ${label} (${p.orders})</li>
 `
 
 })

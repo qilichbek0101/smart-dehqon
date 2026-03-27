@@ -9,6 +9,9 @@ import os
 from routes.orders import orders_bp
 from routes.products import products_bp
 
+# 🔥 AI import (TEPADA bo‘lishi shart)
+from ai_predict import get_ai_insight
+
 
 app = Flask(__name__, static_folder=".", static_url_path="")
 app.config.from_object(Config)
@@ -72,7 +75,6 @@ def add_product():
         db.session.add(product)
 
     else:
-        # faqat narxni yangilaymiz
         product.price = price
 
     # =====================
@@ -101,6 +103,25 @@ def add_product():
 
 
 # =====================
+# AI INSIGHT (🔥 YANGI)
+# =====================
+
+@app.route("/ai-insight/<product_name>")
+def ai_insight(product_name):
+
+    history = PriceHistory.query \
+        .filter(PriceHistory.product_name.ilike(product_name)) \
+        .order_by(PriceHistory.created_at.asc()) \
+        .all()
+
+    prices = [h.price for h in history]
+
+    result = get_ai_insight(prices)
+
+    return jsonify(result)
+
+
+# =====================
 # BLUEPRINTS
 # =====================
 
@@ -117,5 +138,9 @@ def home():
     return app.send_static_file("index.html")
 
 
+# =====================
+# RUN
+# =====================
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)

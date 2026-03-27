@@ -112,15 +112,14 @@ def export_orders():
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
-    # ======================
-# TOP PRODUCTS
-# ======================
 
+# ======================
+# TOP PRODUCTS + DEMAND
+# ======================
 @orders_bp.route("/top-products")
 def top_products():
 
     from sqlalchemy import func
-    from models import Order
 
     data = db.session.query(
         Order.product,
@@ -129,12 +128,28 @@ def top_products():
 
     result = []
 
+    # 🔥 LISTGA O‘TKAZAMIZ
     for product, count in data:
         result.append({
             "product": product,
             "orders": count
         })
 
+    # 🔥 SORT
     result.sort(key=lambda x: x["orders"], reverse=True)
+
+    # 🔥 DEMAND HISOBLASH (ENG MUHIM QISM)
+    if result:
+        max_count = result[0]["orders"]  # eng kattasi
+
+        for item in result:
+            ratio = item["orders"] / max_count
+
+            if ratio >= 0.8:
+                item["demand"] = "high"
+            elif ratio >= 0.5:
+                item["demand"] = "medium"
+            else:
+                item["demand"] = "low"
 
     return jsonify(result)

@@ -176,6 +176,15 @@
   </div>
 </footer>
 <script>
+
+// 🔥 ROLE TEKSHIRUV (ENG MUHIM)
+const role = localStorage.getItem("role")
+
+if(!role){
+  window.location = "login.html"
+}
+
+// 🎯 WHY BUTTON LOGIC
 document.querySelector('.why-btn').addEventListener('click', () => {
   document.querySelector('#why').scrollIntoView({
     behavior: 'smooth'
@@ -185,8 +194,10 @@ document.querySelector('.why-btn').addEventListener('click', () => {
   block.classList.add('highlight');
   setTimeout(()=>block.classList.remove('highlight'), 1500);
 });
+
 </script>
 
 <script src="product.js"></script>
+
 </body>
 </html>

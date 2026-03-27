@@ -25,9 +25,7 @@
 ← Bosh sahifa
 </a>
 
-<a href="admin.html" class="admin-btn">
-Admin
-</a>
+<a href="login.html" class="admin-btn" id="roleBtn">Sotuvchilar uchun</a>
 
 <div class="header-container">
 
@@ -103,6 +101,30 @@ Bekor
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script src="product.js"></script>
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+
+  const role = localStorage.getItem("role")
+  const btn = document.getElementById("roleBtn")
+
+  if(!btn) return
+
+  // 🧑‍🌾 FARMER
+  if(role === "farmer"){
+    btn.innerText = "Admin panel"
+    btn.href = "admin.html"
+  }
+
+  // 🛒 BUYER
+  else{
+    btn.innerText = "Sotuvchilar uchun"
+    btn.href = "login.html"
+  }
+
+})
+</script>
+
+
 
 </body>
 

@@ -1,17 +1,26 @@
 function login(){
 
+const role = document.querySelector('input[name="role"]:checked').value
 const user = document.getElementById("username").value
 const pass = document.getElementById("password").value
 
-if(user === "admin" && pass === "1234"){
+// 🛒 BUYER → login shart emas
+if(role === "buyer"){
+  localStorage.setItem("role", "buyer")
+  window.location = "products.html"
+  return
+}
 
-localStorage.setItem("admin", "true")
+// 🧑‍🌾 FARMER → login shart
+if(role === "farmer"){
 
-window.location = "admin.html"
-
-}else{
-
-alert("Login yoki parol xato")
+  if(user === "admin" && pass === "1234"){
+    localStorage.setItem("role", "farmer")
+    localStorage.setItem("admin", "true")
+    window.location = "admin.html"
+  }else{
+    alert("Login yoki parol xato")
+  }
 
 }
 

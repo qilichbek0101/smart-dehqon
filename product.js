@@ -1,4 +1,5 @@
 let selectedProduct = null
+let role = localStorage.getItem("role") || "buyer"
 let charts = {}
 
 /* ===============================
@@ -11,9 +12,14 @@ try{
 
 const res = await fetch("/products")
 const products = await res.json()
+if(products.length === 0){
+  container.innerHTML = `
+    <p style="text-align:center;">Hozircha mahsulot yo‘q</p>
+  `
+  return
+}
 
 const container = document.getElementById("products")
-
 if(!container) return
 
 container.innerHTML=""
@@ -31,27 +37,36 @@ card.innerHTML=`
 
 <div class="product-actions">
 <button class="chart-btn">📈 Narx grafigi</button>
-<button class="order-btn">Buyurtma berish</button>
+${role === "buyer" ? `<button class="order-btn">Buyurtma berish</button>` : ""}
+</div>
+
+<div class="ai-insight" id="ai-${p.id}">
+  🤖 AI tahlil qilmoqda...
 </div>
 
 <canvas id="chart-${p.id}" style="display:none;height:200px;"></canvas>
-
 `
 
-card.querySelector(".order-btn")
-.addEventListener("click",()=>openOrder(p))
+// 🔥 ORDER BUTTON (xavfsiz)
+const orderBtn = card.querySelector(".order-btn")
+if(orderBtn){
+  orderBtn.addEventListener("click",()=>openOrder(p))
+}
 
-card.querySelector(".chart-btn")
-.addEventListener("click",()=>toggleChart(p))
+// 🔥 CHART BUTTON (xavfsiz)
+const chartBtn = card.querySelector(".chart-btn")
+if(chartBtn){
+  chartBtn.addEventListener("click",()=>toggleChart(p))
+}
 
 container.appendChild(card)
+
+loadAIInsight(p)
 
 })
 
 }catch(err){
-
 console.error("Mahsulot yuklash xato:",err)
-
 }
 
 }
@@ -70,12 +85,8 @@ canvas.style.display="block"
 
 try{
 
-/* REAL PRICE HISTORY */
-
 const res = await fetch("/price-stats/" + product.name)
 const data = await res.json()
-
-/* AI PREDICTION */
 
 const predRes = await fetch("/price-predict/" + product.name)
 const predictions = await predRes.json()
@@ -85,17 +96,12 @@ if(!data.length) return
 const labels = data.map(d=>d.date)
 const prices = data.map(d=>d.price)
 
-/* AI labels */
-
 let futureLabels = []
-
 for(let i=1;i<=predictions.length;i++){
 futureLabels.push("AI+"+i)
 }
 
 const allLabels = [...labels, ...futureLabels]
-
-/* DATASET */
 
 const historyDataset = prices
 
@@ -103,29 +109,22 @@ const predictionDataset = new Array(prices.length-1).fill(null)
 predictionDataset.push(prices[prices.length-1])
 predictionDataset.push(...predictions)
 
-/* OLD CHART DESTROY */
-
 if(charts[product.id]){
 charts[product.id].destroy()
 }
 
 charts[product.id] = new Chart(canvas,{
-
 type:"line",
-
 data:{
 labels:allLabels,
 datasets:[
-
 {
 label:"Real narx",
 data:historyDataset,
 borderColor:"#2e7d32",
-backgroundColor:"rgba(46,125,50,0.2)",
 borderWidth:3,
 tension:0.3
 },
-
 {
 label:"AI prognoz",
 data:predictionDataset,
@@ -134,17 +133,11 @@ borderDash:[6,6],
 borderWidth:3,
 tension:0.3
 }
-
 ]
 },
-
 options:{
 responsive:true,
-plugins:{
-legend:{
-display:true
-}
-},
+plugins:{legend:{display:true}},
 scales:{
 y:{
 beginAtZero:false,
@@ -153,48 +146,31 @@ suggestedMax: Math.max(...prices) + 2000
 }
 }
 }
-
 })
 
 }catch(err){
-
 console.error("Grafik xato:",err)
-
 }
 
 }else{
-
 canvas.style.display="none"
-
 }
 
 }
 
 /* ===============================
-   BUYURTMA POPUP
+   BUYURTMA
 ================================ */
 
 function openOrder(product){
-
 selectedProduct = product
 document.getElementById("popup").style.display="flex"
-
 }
-
-/* ===============================
-   POPUP YOPISH
-================================ */
 
 function closePopup(){
-
 document.getElementById("popup").style.display="none"
 document.getElementById("phoneInput").value=""
-
 }
-
-/* ===============================
-   BUYURTMA YUBORISH
-================================ */
 
 async function submitOrder(){
 
@@ -214,15 +190,9 @@ phone:phone
 try{
 
 const res = await fetch("/send-order",{
-
 method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
+headers:{"Content-Type":"application/json"},
 body:JSON.stringify(data)
-
 })
 
 const result = await res.json()
@@ -233,9 +203,7 @@ closePopup()
 }
 
 }catch(err){
-
 console.error("Buyurtma xato:",err)
-
 }
 
 }
@@ -245,3 +213,95 @@ console.error("Buyurtma xato:",err)
 ================================ */
 
 document.addEventListener("DOMContentLoaded",renderProducts)
+
+/* ===============================
+   AI INSIGHT
+================================ */
+
+async function loadAIInsight(product){
+
+try{
+
+const res = await fetch("/ai-insight/" + product.name)
+const data = await res.json()
+
+const box = document.getElementById(`ai-${product.id}`)
+if(!box) return
+
+let badge = ""
+let badgeClass = ""
+let icon = ""
+
+if(data.trend === "up") icon = "📈"
+if(data.trend === "down") icon = "📉"
+if(data.trend === "stable") icon = "⚖️"
+
+if(role === "farmer"){
+  if(data.trend === "up"){
+    badge = "🟢 KUTING"
+    badgeClass = "ai-up"
+  }
+  else if(data.trend === "down"){
+    badge = "🔴 SOTING"
+    badgeClass = "ai-down"
+  }
+  else{
+    badge = "🟡 BARQAROR"
+    badgeClass = "ai-stable"
+  }
+}else{
+  if(data.trend === "up"){
+    badge = "⏳ TEZ ORADA QIMMATLASHADI"
+    badgeClass = "ai-up"
+  }
+  else if(data.trend === "down"){
+    badge = "💰 HOZIR ARZON"
+    badgeClass = "ai-down"
+  }
+  else{
+    badge = "📊 BARQAROR"
+    badgeClass = "ai-stable"
+  }
+}
+
+let message = data.message
+
+if(role === "buyer"){
+  if(data.trend === "up"){
+    message = "Narx oshishi kutilmoqda. Hozir olsangiz foydali."
+  }
+  else if(data.trend === "down"){
+    message = "Narx tushmoqda. Hozir arzon narxda olish mumkin."
+  }
+}
+
+box.innerHTML = `
+<div class="ai-box-inner">
+
+  <div class="ai-header">
+    <span class="ai-badge ${badgeClass}">
+      ${icon} ${badge}
+    </span>
+    <span class="ai-confidence">${data.confidence}%</span>
+  </div>
+
+  <div class="ai-message">
+    ${message}
+  </div>
+
+  <div class="ai-explanation">
+    ${data.explanation || ""}
+  </div>
+
+  <div class="ai-bar">
+    <div class="ai-fill" style="width:${data.confidence}%"></div>
+  </div>
+
+</div>
+`
+
+}catch(err){
+console.error("AI xato:", err)
+}
+
+}

@@ -19,12 +19,51 @@
 
 <input id="password" type="password" placeholder="Parol">
 
+<div class="role-select">
+
+  <label class="role-card">
+    <input type="radio" name="role" value="buyer" checked>
+    <div class="role-box">
+      🛒 Xaridor
+    </div>
+  </label>
+
+  <label class="role-card">
+    <input type="radio" name="role" value="farmer">
+    <div class="role-box">
+      🚜 Fermer
+    </div>
+  </label>
+
+</div>
+
 <button onclick="login()">Kirish</button>
 
 </div>
 
 <script src="login.js"></script>
 
+<script>
+
+const roleInputs = document.querySelectorAll('input[name="role"]')
+const username = document.getElementById("username")
+const password = document.getElementById("password")
+
+roleInputs.forEach(r => {
+  r.addEventListener("change", () => {
+
+    if(r.value === "buyer" && r.checked){
+      username.style.display = "none"
+      password.style.display = "none"
+    }else{
+      username.style.display = "block"
+      password.style.display = "block"
+    }
+
+  })
+})
+
+</script>
 </body>
 
 </html>
