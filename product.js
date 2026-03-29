@@ -65,6 +65,8 @@ loadAIInsight(p)
 
 })
 
+
+
 }catch(err){
 console.error("Mahsulot yuklash xato:",err)
 }

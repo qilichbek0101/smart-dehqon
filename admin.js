@@ -275,7 +275,7 @@ loadStats()
 
 loadTopProducts()
 loadCropRecommendation()
-
+loadPlantAdvice()
 })
 
 /* =========================
@@ -372,4 +372,54 @@ box.innerHTML += `
 console.log(err)
 }
 
+}
+// ===============================
+// AI EKIN TAVSIYA
+// ===============================
+
+async function loadPlantAdvice(){
+
+  try{
+
+    const res = await fetch("/top-products")
+    const data = await res.json()
+
+    data.sort((a,b)=> b.orders - a.orders)
+
+    const top3 = data.slice(0,3)
+
+    const container = document.getElementById("aiPlantBox")
+    if(!container) return
+
+    container.innerHTML = `<h3>🌱 AI ekish tavsiyasi</h3>`
+
+    top3.forEach((p,i)=>{
+
+      let rank = ""
+      let label = ""
+
+      if(i === 0){
+        rank = "🥇"
+        label = "Eng foydali"
+      }
+      else if(i === 1){
+        rank = "🥈"
+        label = "Barqaror"
+      }
+      else{
+        rank = "🥉"
+        label = "Past foyda"
+      }
+
+      container.innerHTML += `
+        <div class="ai-plant-box">
+          ${rank} ${p.product} — ${label}<br>
+          📦 ${p.orders} buyurtma
+        </div>
+      `
+    })
+
+  }catch(err){
+    console.error("AI tavsiya xato:", err)
+  }
 }
