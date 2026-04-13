@@ -9,29 +9,26 @@ import os
 from routes.orders import orders_bp
 from routes.products import products_bp
 
-# 🔥 AI import (TEPADA bo‘lishi shart)
-from ai_predict import get_ai_insight
+from ai_predict import get_ai_insight, analyze_disease_image
 
-
+# =====================
+# APP INIT (FAQAT 1 MARTA)
+# =====================
 app = Flask(__name__, static_folder=".", static_url_path="")
 app.config.from_object(Config)
 
 CORS(app)
 db.init_app(app)
 
-
 # =====================
 # DB CREATE
 # =====================
-
 with app.app_context():
     db.create_all()
-
 
 # =====================
 # ADD PRODUCT
 # =====================
-
 @app.route("/add-product", methods=["POST"])
 def add_product():
 
@@ -52,7 +49,6 @@ def add_product():
 
     product = Product.query.filter_by(name=name).first()
 
-    # yangi mahsulot
     if not product:
 
         if not image:
@@ -77,10 +73,6 @@ def add_product():
     else:
         product.price = price
 
-    # =====================
-    # PRICE HISTORY
-    # =====================
-
     history = PriceHistory(
         product_name=name,
         price=price
@@ -89,7 +81,6 @@ def add_product():
     db.session.add(history)
     db.session.commit()
 
-    # faqat oxirgi 30 ta narxni qoldiramiz
     old = PriceHistory.query.filter_by(product_name=name) \
         .order_by(PriceHistory.created_at.desc()) \
         .offset(30).all()
@@ -101,11 +92,9 @@ def add_product():
 
     return jsonify({"status": "ok"})
 
-
 # =====================
-# AI INSIGHT (🔥 YANGI)
+# AI INSIGHT
 # =====================
-
 @app.route("/ai-insight/<product_name>")
 def ai_insight(product_name):
 
@@ -120,27 +109,123 @@ def ai_insight(product_name):
 
     return jsonify(result)
 
+# =====================
+# 🔥 AI CHAT (ENG MUHIM)
+# =====================
+@app.route("/ai-chat", methods=["POST"])
+def ai_chat():
+    data = request.get_json()
+    text = data.get("text", "").lower()
+
+#    if "pomidor" in text:
+
+    if "dog" in text or "qora" in text:
+        return jsonify({
+            "kasallik": "Fitoftora",
+            "confidence": 85,
+            "sabab": "Yuqori namlik va qo‘ziqorin kasalligi",
+            "tavsiyalar": [
+                "Zararlangan barglarni olib tashlang",
+                "Sug‘orishni kamaytiring"
+            ],
+            "dori": ["Ridomil Gold", "Bravo"]
+        })
+
+    elif "sarg" in text:
+        return jsonify({
+            "kasallik": "Azot yetishmasligi",
+            "confidence": 70,
+            "sabab": "O‘g‘it yetishmasligi",
+            "tavsiyalar": [
+                "Azotli o‘g‘it qo‘shing",
+                "Tuproqni tekshiring"
+            ],
+            "dori": ["Karbamid"]
+        })
+
+    elif "oq" in text:
+        return jsonify({
+            "kasallik": "Oq chirish",
+            "confidence": 60,
+            "sabab": "Zamburug‘ infektsiyasi",
+            "tavsiyalar": [
+                "Zararlangan qismlarni olib tashlang",
+                "Namlikni kamaytiring"
+            ],
+            "dori": ["Topaz"]
+        })
+
+    elif "hasharot" in text:
+        return jsonify({
+            "kasallik": "Zararkunanda hujumi",
+            "confidence": 75,
+            "sabab": "Tuta absoluta yoki boshqa hasharot",
+            "tavsiyalar": [
+                "Barglarni tekshiring",
+                "Zararlangan qismlarni olib tashlang"
+            ],
+            "dori": ["Aktara", "Karate"]
+        })
+
+    else:
+        return jsonify({
+            "kasallik": "Aniqlanmadi",
+            "sabab": "Ma’lumot yetarli emas",
+            "tavsiyalar": [
+                "Batafsil yozing",
+                "Rasm yuklang"
+            ],
+            "dori": []
+        })
+
+
+# =====================
+# IMAGE DISEASE ANALYSIS
+# =====================
+@app.route("/analyze-disease-image", methods=["POST"])
+def analyze_disease():
+
+    image = request.files.get("image")
+
+    if not image or not image.filename:
+        return jsonify({"error": "Rasm yuborilmadi"}), 400
+
+    filename = secure_filename(image.filename.lower())
+    allowed = (".jpg", ".jpeg", ".png", ".webp")
+
+    if not filename.endswith(allowed):
+        return jsonify({"error": "Faqat jpg, jpeg, png, webp ruxsat"}), 400
+
+    image_bytes = image.read()
+
+    if not image_bytes:
+        return jsonify({"error": "Rasm bo'sh"}), 400
+
+    try:
+        result = analyze_disease_image(image_bytes)
+        return jsonify(result)
+    except Exception as exc:
+        return jsonify({
+            "error": "Rasm tahlil qilinmadi",
+            "details": str(exc)
+        }), 500
+
 
 # =====================
 # BLUEPRINTS
 # =====================
-
 app.register_blueprint(orders_bp)
 app.register_blueprint(products_bp)
-
 
 # =====================
 # HOME
 # =====================
-
 @app.route("/")
 def home():
     return app.send_static_file("index.html")
 
-
 # =====================
 # RUN
 # =====================
-
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5002, debug=True)

@@ -8,18 +8,12 @@
 <title>Smart Dehqon | Fermer paneli</title>
 
 <link rel="stylesheet" href="style.css">
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Inter&display=swap" rel="stylesheet">
-
 </head>
-
 
 <body>
 
 <div class="container">
-
-
-<!-- HEADER -->
 
 <header class="admin-header">
 
@@ -45,33 +39,56 @@ Chiqish
 
 </header>
 
-
-
-<!-- LOGO -->
-
 <div class="header-container">
 
 <img src="image/logo3.jpg" class="logo">
 
 <div class="brand-text">
-
 <h1>Smart Dehqon</h1>
 <p>Fermer paneli</p>
-
 </div>
 
 </div>
 
 <div id="aiPlantBox" class="ai-plant-wrapper">
-  <h3>🌱 AI ekish tavsiyasi</h3>
+  <h3>AI ekish tavsiyasi</h3>
 </div>
 
+<div class="ai-chat-box">
+  <h3>AgroAI Assistant</h3>
 
-<!-- MAHSULOT QO‘SHISH -->
+<input id="aiInput" placeholder="Masalan: pomidor bargida qora dog' bor">
+<button onclick="askAI()">So'rash</button>
+
+<div id="aiResult"></div>
+</div>
 
 <section class="section">
 
-<h2 class="section-title">Mahsulot qo‘shish</h2>
+<div class="disease-ai-box">
+
+<div class="disease-ai-copy">
+<h2 class="section-title">Rasm orqali kasallik aniqlash</h2>
+<p class="disease-ai-text">
+Barg yoki mevaning rasmini yuklang. AI ranglar va dog'lar ulushiga qarab ehtimoliy kasallikni chiqaradi.
+</p>
+</div>
+
+<div class="disease-ai-form">
+<input type="file" id="diseaseImageInput" accept="image/*">
+<button onclick="analyzeDiseaseImage()">Rasmni tahlil qilish</button>
+</div>
+
+<div id="diseasePreview" class="disease-preview"></div>
+<div id="diseaseResult"></div>
+
+</div>
+
+</section>
+
+<section class="section">
+
+<h2 class="section-title">Mahsulot qo'shish</h2>
 
 <div class="admin-form">
 
@@ -86,10 +103,8 @@ id="price"
 placeholder="Narx">
 
 <select id="unit">
-
 <option value="kg">kg</option>
 <option value="dona">dona</option>
-
 </select>
 
 <input
@@ -98,62 +113,47 @@ id="imageInput"
 accept="image/*">
 
 <button onclick="addProduct()">
-Qo‘shish
+Qo'shish
 </button>
 
 </div>
 
 </section>
 
-
-
-
-<!-- STATISTIKA -->
-
 <section class="section stats">
 
 <div class="stat">
-    
-
 <h3 id="totalOrders">0</h3>
 <p>Jami buyurtmalar</p>
-
 </div>
 
 <div class="stat">
-
 <h3 id="todayOrders">0</h3>
 <p>Bugungi buyurtmalar</p>
-
 </div>
 
 <div class="stat">
-
 <h3 id="totalRevenue">0</h3>
 <p>Jami summa</p>
-
 </div>
 
 </section>
+
 <h2 class="section-title">AI Analytics</h2>
 
 <div class="ai-box">
 
 <div class="ai-card">
-<h3>🔥 Eng ko‘p sotilgan</h3>
+<h3>Eng ko'p sotilgan</h3>
 <ul id="topProducts"></ul>
 </div>
 
 <div class="ai-card">
-<h3>🔥 Talab prognozi (AI)</h3>
+<h3>Talab prognozi (AI)</h3>
 <ul id="cropRecommend"></ul>
 </div>
 
 </div>
-
-
-
-<!-- BUYURTMALAR -->
 
 <section class="section">
 
@@ -178,11 +178,6 @@ Qo‘shish
 
 </section>
 
-
-
-
-<!-- MAHSULOTLAR -->
-
 <section class="section">
 
 <h2 class="section-title">
@@ -193,10 +188,7 @@ Mahsulotlar
 
 </section>
 
-
-
 </div>
-
 
 <script src="admin.js"></script>
 

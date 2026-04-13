@@ -1,4 +1,5 @@
 let selectedProduct = null
+// let role = window.role || "buyer" 
 let role = localStorage.getItem("role") || "buyer"
 let charts = {}
 
@@ -307,3 +308,4 @@ console.error("AI xato:", err)
 }
 
 }
+
