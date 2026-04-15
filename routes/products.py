@@ -122,16 +122,49 @@ def delete_product(id):
 @products_bp.route("/update-product/<int:id>", methods=["PUT"])
 def update_product(id):
 
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
 
     product = Product.query.get(id)
 
     if not product:
         return jsonify({"error": "Product not found"}), 404
 
-    product.name = data.get("name", product.name)
-    product.price = int(data.get("price", product.price))
-    product.unit = data.get("unit", product.unit)
+    old_name = product.name
+    new_name = (data.get("name") or product.name or "").strip()
+    new_unit = (data.get("unit") or product.unit or "kg").strip()
+
+    if not new_name:
+        return jsonify({"error": "Mahsulot nomini kiriting"}), 400
+
+    duplicate = Product.query.filter(
+        Product.name == new_name,
+        Product.id != product.id
+    ).first()
+
+    if duplicate:
+        return jsonify({"error": "Bu nomdagi mahsulot mavjud"}), 409
+
+    try:
+        new_price = int(data.get("price", product.price))
+    except (TypeError, ValueError):
+        return jsonify({"error": "Narx raqam bo'lishi kerak"}), 400
+
+    if new_price <= 0:
+        return jsonify({"error": "Narx 0 dan katta bo'lishi kerak"}), 400
+
+    price_changed = product.price != new_price
+
+    product.name = new_name
+    product.price = new_price
+    product.unit = new_unit
+
+    if old_name != new_name:
+        PriceHistory.query.filter_by(product_name=old_name).update(
+            {"product_name": new_name}
+        )
+
+    if price_changed:
+        db.session.add(PriceHistory(product_name=new_name, price=new_price))
 
     db.session.commit()
 

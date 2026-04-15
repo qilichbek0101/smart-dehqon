@@ -50,18 +50,45 @@ Chiqish
 
 </div>
 
-<div id="aiPlantBox" class="ai-plant-wrapper">
-  <h3>AI ekish tavsiyasi</h3>
+<section class="section admin-ai-section">
+
+<div class="admin-ai-grid">
+
+<div id="aiPlantBox" class="ai-plant-wrapper ai-dashboard-card">
+  <div class="ai-panel-head">
+    <span class="ai-panel-kicker">AI tavsiya</span>
+    <h2>AI ekish tavsiyasi</h2>
+    <p>Buyurtmalar va talabga qarab qaysi mahsulot foydaliroq ekanini kuzating.</p>
+  </div>
+  <div class="ai-loading-card">Ma'lumotlar yuklanmoqda...</div>
 </div>
 
-<div class="ai-chat-box">
-  <h3>AgroAI Assistant</h3>
+<div class="ai-chat-box ai-dashboard-card">
+  <div class="ai-panel-head">
+    <span class="ai-panel-kicker">AgroAI</span>
+    <h2>AgroAI Assistant</h2>
+    <p>Kasallik belgisi, barg rangi yoki zararkunanda haqida savol yozing.</p>
+  </div>
 
-<input id="aiInput" placeholder="Masalan: pomidor bargida qora dog' bor">
-<button onclick="askAI()">So'rash</button>
+  <div class="ai-question-row">
+    <input id="aiInput" placeholder="Masalan: pomidor bargida qora dog' bor">
+    <button onclick="askAI()">So'rash</button>
+  </div>
 
-<div id="aiResult"></div>
+  <div class="ai-suggestion-row">
+    <button type="button" data-ai-question="pomidor bargida qora dog' bor">Qora dog'</button>
+    <button type="button" data-ai-question="barglar sarg'ayib qolyapti">Sarg'ayish</button>
+    <button type="button" data-ai-question="o'simlikda hasharot bor">Hasharot</button>
+  </div>
+
+  <div id="aiResult" class="ai-chat-result">
+    <div class="ai-empty-state">Savol yuboring, tavsiya shu yerda chiqadi.</div>
+  </div>
 </div>
+
+</div>
+
+</section>
 
 <section class="section">
 

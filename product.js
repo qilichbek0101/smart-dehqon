@@ -3,6 +3,15 @@ let selectedProduct = null
 let role = localStorage.getItem("role") || "buyer"
 let charts = {}
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;")
+}
+
 /* ===============================
    MAHSULOTLARNI CHIQARISH
 ================================ */
@@ -11,7 +20,11 @@ async function renderProducts(){
 
 try{
 
+const container = document.getElementById("products")
+if(!container) return
+
 const res = await fetch("/products")
+if(!res.ok) throw new Error("Mahsulotlar yuklanmadi")
 const products = await res.json()
 if(products.length === 0){
   container.innerHTML = `
@@ -19,9 +32,6 @@ if(products.length === 0){
   `
   return
 }
-
-const container = document.getElementById("products")
-if(!container) return
 
 container.innerHTML=""
 
@@ -32,9 +42,9 @@ card.className="product-card"
 
 card.innerHTML=`
 
-<img src="${p.image}">
-<h3>${p.name.charAt(0).toUpperCase() + p.name.slice(1)}</h3>
-<p>${p.price} so'm / ${p.unit}</p>
+<img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}">
+<h3>${escapeHtml(p.name.charAt(0).toUpperCase() + p.name.slice(1))}</h3>
+<p>${escapeHtml(p.price)} so'm / ${escapeHtml(p.unit)}</p>
 
 <div class="product-actions">
 <button class="chart-btn">📈 Narx grafigi</button>
@@ -88,10 +98,12 @@ canvas.style.display="block"
 
 try{
 
-const res = await fetch("/price-stats/" + product.name)
+const productName = encodeURIComponent(product.name)
+
+const res = await fetch("/price-stats/" + productName)
 const data = await res.json()
 
-const predRes = await fetch("/price-predict/" + product.name)
+const predRes = await fetch("/price-predict/" + productName)
 const predictions = await predRes.json()
 
 if(!data.length) return
@@ -225,7 +237,7 @@ async function loadAIInsight(product){
 
 try{
 
-const res = await fetch("/ai-insight/" + product.name)
+const res = await fetch("/ai-insight/" + encodeURIComponent(product.name))
 const data = await res.json()
 
 const box = document.getElementById(`ai-${product.id}`)
@@ -289,11 +301,11 @@ box.innerHTML = `
   </div>
 
   <div class="ai-message">
-    ${message}
+    ${escapeHtml(message)}
   </div>
 
   <div class="ai-explanation">
-    ${data.explanation || ""}
+    ${escapeHtml(data.explanation || "")}
   </div>
 
   <div class="ai-bar">

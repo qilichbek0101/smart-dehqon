@@ -116,28 +116,71 @@ function addProduct() {
 
 function renderAdminProducts() {
   fetch("/products")
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Mahsulotlar yuklanmadi");
+      }
+      return res.json();
+    })
     .then((products) => {
       const box = document.getElementById("adminProducts");
       if (!box) return;
 
       box.innerHTML = "";
 
+      if (!products.length) {
+        box.innerHTML = `<p class="empty-text">Hozircha mahsulot yo'q</p>`;
+        return;
+      }
+
       products.forEach((p) => {
-        box.innerHTML += `
-          <div class="admin-product">
-            <img src="${escapeHtml(p.image)}" class="admin-img">
-            <div class="admin-info">
-              <h3>${escapeHtml(p.name)}</h3>
-              <p>${escapeHtml(p.price)} so'm / ${escapeHtml(p.unit)}</p>
-            </div>
-            <div class="admin-actions">
-              <button onclick="editProduct(${p.id}, ${JSON.stringify(p.name)}, ${p.price}, ${JSON.stringify(p.unit)})" class="edit-btn">Edit</button>
-              <button onclick="deleteProduct(${p.id})" class="delete-btn">Delete</button>
-            </div>
-          </div>
-        `;
+        const row = document.createElement("div");
+        row.className = "admin-product";
+
+        const image = document.createElement("img");
+        image.className = "admin-img";
+        image.src = p.image || "image/logo3.jpg";
+        image.alt = p.name || "Mahsulot rasmi";
+
+        const info = document.createElement("div");
+        info.className = "admin-info";
+
+        const title = document.createElement("h3");
+        title.textContent = p.name;
+
+        const meta = document.createElement("p");
+        meta.textContent = `${p.price} so'm / ${p.unit}`;
+
+        info.append(title, meta);
+
+        const actions = document.createElement("div");
+        actions.className = "admin-actions";
+
+        const editBtn = document.createElement("button");
+        editBtn.className = "edit-btn";
+        editBtn.type = "button";
+        editBtn.textContent = "Edit";
+        editBtn.addEventListener("click", () => {
+          editProduct(p.id, p.name, p.price, p.unit);
+        });
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "delete-btn";
+        deleteBtn.type = "button";
+        deleteBtn.textContent = "Delete";
+        deleteBtn.addEventListener("click", () => deleteProduct(p.id));
+
+        actions.append(editBtn, deleteBtn);
+        row.append(image, info, actions);
+        box.appendChild(row);
       });
+    })
+    .catch((err) => {
+      console.error("Products load error:", err);
+      const box = document.getElementById("adminProducts");
+      if (box) {
+        box.innerHTML = `<p class="error-text">Mahsulotlarni yuklashda xatolik bo'ldi</p>`;
+      }
     });
 }
 
@@ -159,10 +202,27 @@ function deleteProduct(id) {
 
 function editProduct(id, name, price, unit) {
   const newName = prompt("Mahsulot nomi:", name);
-  const newPrice = prompt("Narx:", price);
-  const newUnit = prompt("Birlik:", unit);
+  if (newName === null) return;
 
-  if (!newName || !newPrice) return;
+  const newPrice = prompt("Narx:", price);
+  if (newPrice === null) return;
+
+  const newUnit = prompt("Birlik:", unit);
+  if (newUnit === null) return;
+
+  const cleanName = newName.trim();
+  const cleanPrice = newPrice.trim();
+  const cleanUnit = newUnit.trim() || "kg";
+
+  if (!cleanName || !cleanPrice) {
+    alert("Nom va narxni to'liq kiriting");
+    return;
+  }
+
+  if (!Number.isFinite(Number(cleanPrice)) || Number(cleanPrice) <= 0) {
+    alert("Narx 0 dan katta raqam bo'lishi kerak");
+    return;
+  }
 
   fetch(`/update-product/${id}`, {
     method: "PUT",
@@ -170,15 +230,25 @@ function editProduct(id, name, price, unit) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      name: newName,
-      price: newPrice,
-      unit: newUnit,
+      name: cleanName,
+      price: cleanPrice,
+      unit: cleanUnit,
     }),
   })
-    .then((res) => res.json())
+    .then(async (res) => {
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Mahsulot yangilanmadi");
+      }
+      return data;
+    })
     .then(() => {
       alert("Mahsulot yangilandi");
       renderAdminProducts();
+    })
+    .catch((err) => {
+      console.error("Update error:", err);
+      alert(err.message || "Mahsulotni yangilashda xatolik bo'ldi");
     });
 }
 
@@ -276,25 +346,52 @@ async function loadCropRecommendation() {
 
 async function loadPlantAdvice() {
   try {
-    const res = await fetch("/top-products");
+    const res = await fetch("/crop-recommendation");
     const data = await res.json();
-    data.sort((a, b) => b.orders - a.orders);
 
-    const top3 = data.slice(0, 3);
+    const top3 = data.slice(0, 3).map((item) => ({
+      product: item[0],
+      score: Math.round(Number(item[1]) || 0),
+    }));
     const container = document.getElementById("aiPlantBox");
     if (!container) return;
 
-    container.innerHTML = "<h3>AI ekish tavsiyasi</h3>";
+    container.innerHTML = `
+      <div class="ai-panel-head">
+        <span class="ai-panel-kicker">AI tavsiya</span>
+        <h2>AI ekish tavsiyasi</h2>
+        <p>Buyurtmalar va talabga qarab qaysi mahsulot foydaliroq ekanini kuzating.</p>
+      </div>
+    `;
+
+    if (!top3.length) {
+      container.innerHTML += `
+        <div class="ai-empty-state">
+          Hali mahsulot yo'q. Mahsulot qo'shilgach, AI eng foydali ekinlarni tartiblaydi.
+        </div>
+      `;
+      return;
+    }
+
+    const list = document.createElement("div");
+    list.className = "ai-plant-list";
 
     top3.forEach((p, i) => {
       const label = i === 0 ? "Eng foydali" : i === 1 ? "Barqaror" : "Zaxira variant";
-      container.innerHTML += `
-        <div class="ai-plant-box">
-          <strong>${i + 1}.</strong> ${escapeHtml(p.product)} - ${label}<br>
-          ${escapeHtml(p.orders)} buyurtma
-        </div>
+      const card = document.createElement("div");
+      card.className = `ai-plant-box ai-plant-rank-${i + 1}`;
+      card.innerHTML = `
+        <span class="ai-plant-rank">${i + 1}</span>
+        <span class="ai-plant-info">
+          <strong>${escapeHtml(p.product)}</strong>
+          <small>${label}</small>
+        </span>
+        <span class="ai-plant-orders">AI ball: ${escapeHtml(p.score)}</span>
       `;
+      list.appendChild(card);
     });
+
+    container.appendChild(list);
   } catch (err) {
     console.error("AI tavsiya xato:", err);
   }
@@ -309,6 +406,11 @@ async function askAI() {
   }
 
   try {
+    const result = document.getElementById("aiResult");
+    if (result) {
+      result.innerHTML = `<div class="ai-loading-card">AgroAI javob tayyorlamoqda...</div>`;
+    }
+
     const res = await fetch("/ai-chat", {
       method: "POST",
       headers: {
@@ -382,6 +484,15 @@ document.addEventListener("DOMContentLoaded", () => {
   loadTopProducts();
   loadCropRecommendation();
   loadPlantAdvice();
+
+  document.querySelectorAll("[data-ai-question]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const input = document.getElementById("aiInput");
+      if (!input) return;
+      input.value = button.dataset.aiQuestion || "";
+      input.focus();
+    });
+  });
 
   const diseaseInput = document.getElementById("diseaseImageInput");
   if (diseaseInput) {

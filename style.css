@@ -1222,3 +1222,634 @@ cursor:pointer;
   color:#a12626;
 }
 /* mobile */
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  padding-top:0;
+  overflow-x:hidden;
+  font-family:Inter,Arial,sans-serif;
+}
+
+img,
+canvas{
+  max-width:100%;
+}
+
+button,
+.btn,
+.hero-btn,
+.order-btn,
+.chart-btn,
+.call-btn,
+.edit-btn,
+.delete-btn{
+  border-radius:8px;
+}
+
+.container{
+  width:min(1120px,100%);
+  margin:0 auto;
+  padding:0 20px 40px;
+}
+
+.header,
+.admin-header{
+  min-height:76px;
+  height:auto;
+  gap:14px;
+  padding:12px 24px;
+}
+
+.admin-header{
+  flex-wrap:wrap;
+}
+
+.admin-header .left,
+.admin-header .right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.section,
+.problem,
+.why-now,
+.why,
+.products-preview{
+  padding-left:20px;
+  padding-right:20px;
+}
+
+.section{
+  max-width:1100px;
+  margin:0 auto;
+  overflow-x:auto;
+}
+
+.products{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  align-items:stretch;
+  max-width:1100px;
+  margin:30px auto 0;
+}
+
+.product-card{
+  width:auto;
+  max-width:100%;
+  border-radius:8px;
+}
+
+.product-actions{
+  flex-wrap:wrap;
+}
+
+.product-actions button{
+  flex:1 1 140px;
+}
+
+.stats{
+  width:calc(100% - 40px);
+  max-width:1000px;
+  flex-wrap:wrap;
+  gap:20px;
+}
+
+.stat{
+  flex:1 1 220px;
+  width:auto;
+  min-width:0;
+  border-radius:8px;
+}
+
+.ai-box{
+  max-width:1100px;
+  margin:20px auto;
+  padding:0 20px;
+  flex-wrap:wrap;
+}
+
+.ai-card{
+  min-width:260px;
+  border-radius:8px;
+}
+
+.ai-chat-box{
+  max-width:760px;
+  margin:20px auto;
+  padding:0 20px;
+}
+
+.ai-chat-box input{
+  width:100%;
+  max-width:100%;
+  padding:12px;
+  border:1px solid #cfd8cf;
+  border-radius:8px;
+  margin:8px 0 12px;
+}
+
+.disease-ai-box,
+.disease-result-card,
+.disease-preview-image{
+  border-radius:8px;
+}
+
+.disease-ai-box{
+  max-width:900px;
+  margin:0 auto;
+}
+
+.disease-ai-form input,
+.disease-ai-form button{
+  border-radius:8px;
+}
+
+.orders-table{
+  min-width:660px;
+}
+
+.products-admin-list{
+  max-width:900px;
+  margin:0 auto;
+}
+
+.admin-product{
+  width:min(800px,100%);
+  gap:12px;
+  border-radius:8px;
+}
+
+.admin-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.admin-actions button{
+  margin-left:0;
+}
+
+.empty-text,
+.error-text{
+  text-align:center;
+  color:#555;
+  padding:16px;
+}
+
+.error-text{
+  color:#a12626;
+}
+
+@media (max-width:700px){
+  .header,
+  .admin-header{
+    position:static;
+    align-items:stretch;
+    padding:12px 16px;
+  }
+
+  .header{
+    flex-direction:column;
+  }
+
+  .header .home-btn,
+  .header .admin-btn{
+    position:static;
+    align-self:flex-start;
+    text-align:center;
+    margin:0;
+    width:auto;
+    padding:8px 12px;
+    font-size:13px;
+  }
+
+  .header-container{
+    order:-1;
+    width:100%;
+    justify-content:flex-start;
+    min-width:0;
+  }
+
+  .brand-text{
+    min-width:0;
+  }
+
+  .brand-text h1{
+    font-size:22px;
+    line-height:1.2;
+  }
+
+  .brand-text p{
+    font-size:12px;
+    line-height:1.35;
+  }
+
+  .hero-main{
+    padding:44px 16px 40px;
+  }
+
+  .hero-content h1{
+    font-size:28px;
+    line-height:1.2;
+  }
+
+  .hero-content p{
+    font-size:15px;
+  }
+
+  .hero-buttons{
+    flex-direction:column;
+  }
+
+  .hero-btn,
+  .hero-buttons button{
+    width:100%;
+    text-align:center;
+  }
+
+  .products-preview{
+    padding-top:36px;
+    padding-bottom:36px;
+  }
+
+  .products{
+    grid-template-columns:1fr;
+    gap:16px;
+  }
+
+  .product-card{
+    width:100%;
+  }
+
+  .stats{
+    width:calc(100% - 32px);
+    margin:36px auto;
+    flex-direction:column;
+  }
+
+  .stat{
+    width:100%;
+  }
+
+  .admin-header{
+    flex-direction:column;
+  }
+
+  .admin-header .left,
+  .admin-header .right{
+    width:100%;
+    flex-direction:row;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .admin-header .btn,
+  .admin-header button{
+    width:auto;
+    text-align:center;
+    padding:8px 12px;
+    font-size:13px;
+  }
+
+  .admin-form{
+    max-width:100%;
+  }
+
+  .admin-product{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .admin-info{
+    margin-left:0;
+  }
+
+  .admin-actions{
+    width:100%;
+  }
+
+  .admin-actions button{
+    flex:1 1 120px;
+  }
+
+  .ai-box{
+    flex-direction:column;
+    margin:16px 0;
+    padding:0;
+  }
+
+  .ai-card{
+    min-width:0;
+  }
+
+  .ai-chat-box{
+    padding:0 16px;
+  }
+
+  .orders-table th,
+  .orders-table td{
+    padding:10px 8px;
+    font-size:13px;
+  }
+
+  .disease-ai-form{
+    flex-direction:column;
+  }
+
+  .disease-ai-form input,
+  .disease-ai-form button{
+    width:100%;
+  }
+
+  .disease-result-head{
+    flex-direction:column;
+  }
+
+  .footer-container{
+    flex-direction:column;
+    gap:18px;
+  }
+
+  .footer{
+    margin-top:44px;
+  }
+}
+
+@media (max-width:420px){
+  .container{
+    padding-left:14px;
+    padding-right:14px;
+  }
+
+  .header .home-btn,
+  .header .admin-btn,
+  .admin-header .btn,
+  .admin-header button{
+    padding:7px 10px;
+    font-size:12px;
+  }
+
+  .brand-text h1{
+    font-size:20px;
+  }
+
+  .hero-content h1{
+    font-size:25px;
+  }
+
+  .section-title{
+    font-size:22px;
+  }
+
+  .product-actions{
+    flex-direction:column;
+  }
+
+  .popup-box,
+  .modal-content,
+  .orders-box{
+    width:calc(100vw - 32px);
+  }
+}
+
+.admin-ai-section{
+  padding-top:22px;
+}
+
+.admin-ai-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(320px,0.95fr);
+  gap:20px;
+  align-items:stretch;
+  max-width:1100px;
+  margin:0 auto;
+}
+
+.ai-dashboard-card{
+  position:relative;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid #dfe8de;
+  border-radius:8px;
+  padding:24px;
+  box-shadow:0 14px 36px rgba(35,64,40,0.08);
+}
+
+.admin-ai-grid .ai-plant-wrapper,
+.admin-ai-grid .ai-chat-box{
+  width:100%;
+  max-width:none;
+  margin:0;
+}
+
+.ai-dashboard-card::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:4px;
+  background:linear-gradient(90deg,#2e7d32,#1565c0,#f9a825);
+}
+
+.ai-panel-head{
+  margin-bottom:18px;
+}
+
+.ai-panel-kicker{
+  display:inline-flex;
+  align-items:center;
+  width:max-content;
+  padding:6px 10px;
+  border:1px solid #cfe3ce;
+  border-radius:8px;
+  background:#f3f8ef;
+  color:#2e7d32;
+  font-size:12px;
+  font-weight:700;
+  text-transform:uppercase;
+}
+
+.ai-panel-head h2{
+  margin:12px 0 8px;
+  color:#1f3d28;
+  font-family:Poppins,Inter,Arial,sans-serif;
+  font-size:24px;
+  line-height:1.2;
+}
+
+.ai-panel-head p{
+  margin:0;
+  color:#5d6b60;
+  line-height:1.55;
+}
+
+.ai-plant-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.ai-plant-box{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center;
+  gap:12px;
+  background:#f8fbf6;
+  border:1px solid #e1ecdd;
+  border-radius:8px;
+  padding:14px;
+  margin:0;
+}
+
+.ai-plant-rank{
+  display:grid;
+  place-items:center;
+  width:42px;
+  height:42px;
+  border-radius:8px;
+  background:#2e7d32;
+  color:#fff;
+  font-weight:800;
+  font-size:18px;
+}
+
+.ai-plant-rank-2 .ai-plant-rank{
+  background:#1565c0;
+}
+
+.ai-plant-rank-3 .ai-plant-rank{
+  background:#b26b00;
+}
+
+.ai-plant-info{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+}
+
+.ai-plant-info strong{
+  color:#1d2d22;
+  font-size:16px;
+  line-height:1.3;
+  word-break:break-word;
+}
+
+.ai-plant-info small{
+  color:#607366;
+  margin-top:3px;
+}
+
+.ai-plant-orders{
+  justify-self:end;
+  white-space:nowrap;
+  background:#fff;
+  border:1px solid #dfe8de;
+  border-radius:8px;
+  color:#2f5f36;
+  font-size:13px;
+  font-weight:700;
+  padding:8px 10px;
+}
+
+.ai-question-row{
+  display:flex;
+  gap:10px;
+  align-items:stretch;
+}
+
+.ai-question-row input{
+  flex:1;
+  min-width:0;
+  margin:0;
+  background:#f9fbf9;
+}
+
+.ai-question-row button{
+  white-space:nowrap;
+  font-weight:700;
+  padding-left:18px;
+  padding-right:18px;
+}
+
+.ai-suggestion-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:12px;
+}
+
+.ai-suggestion-row button{
+  background:#fff;
+  color:#2e7d32;
+  border:1px solid #cfe3ce;
+  padding:8px 10px;
+  font-size:13px;
+}
+
+.ai-suggestion-row button:hover{
+  background:#f3f8ef;
+}
+
+.ai-chat-result{
+  margin-top:16px;
+}
+
+.ai-chat-result .disease-result-card{
+  border-radius:8px;
+  box-shadow:none;
+}
+
+.ai-empty-state,
+.ai-loading-card{
+  border:1px dashed #cfe0ce;
+  border-radius:8px;
+  background:#f8fbf6;
+  color:#627067;
+  padding:16px;
+  line-height:1.5;
+}
+
+@media (max-width:860px){
+  .admin-ai-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media (max-width:520px){
+  .admin-ai-section{
+    padding-left:14px;
+    padding-right:14px;
+  }
+
+  .ai-dashboard-card{
+    padding:18px;
+  }
+
+  .ai-plant-box{
+    grid-template-columns:auto minmax(0,1fr);
+  }
+
+  .ai-plant-orders{
+    grid-column:1 / -1;
+    justify-self:stretch;
+    text-align:center;
+  }
+
+  .ai-question-row{
+    flex-direction:column;
+  }
+
+  .ai-question-row button{
+    width:100%;
+  }
+}

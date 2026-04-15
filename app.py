@@ -11,6 +11,32 @@ from routes.products import products_bp
 
 from ai_predict import get_ai_insight, analyze_disease_image
 
+DEFAULT_PRODUCTS = [
+    {"name": "Piyoz", "price": 100, "unit": "kg", "image": "/image/piyoz.jpeg"},
+    {"name": "Pomidor", "price": 40000, "unit": "kg", "image": "/image/pomidor.jpeg"},
+    {"name": "Kartoshka", "price": 15000, "unit": "kg", "image": "/image/kartoshka.jpeg"},
+    {"name": "Olma", "price": 10000, "unit": "kg", "image": "/image/olma.jpg"},
+    {"name": "Qovun", "price": 20000, "unit": "dona", "image": "/image/qovun.jpg"},
+    {"name": "Tarvuz", "price": 15000, "unit": "dona", "image": "/image/tarvuz.jfif"},
+    {"name": "Karam", "price": 5000, "unit": "kg", "image": "/image/karam_rasmi.jfif"},
+    {"name": "Shaftoli", "price": 10000, "unit": "kg", "image": "/image/shaftoli.jfif"},
+    {"name": "Anor", "price": 12000, "unit": "kg", "image": "/image/anor.jpg"},
+    {"name": "Xurmo", "price": 6000, "unit": "kg", "image": "/image/xurmo.webp"},
+    {"name": "O'rik", "price": 6000, "unit": "kg", "image": "/image/orik.jpg"},
+]
+
+
+def seed_default_products():
+    if Product.query.first():
+        return
+
+    for item in DEFAULT_PRODUCTS:
+        product = Product(**item)
+        db.session.add(product)
+        db.session.add(PriceHistory(product_name=item["name"], price=item["price"]))
+
+    db.session.commit()
+
 # =====================
 # APP INIT (FAQAT 1 MARTA)
 # =====================
@@ -25,6 +51,7 @@ db.init_app(app)
 # =====================
 with app.app_context():
     db.create_all()
+    seed_default_products()
 
 # =====================
 # ADD PRODUCT

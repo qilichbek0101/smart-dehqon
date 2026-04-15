@@ -1,10 +1,16 @@
+*{
+box-sizing:border-box;
+}
+
 body{
 font-family:Arial;
 background:#f4f4f4;
 display:flex;
 justify-content:center;
 align-items:center;
-height:100vh;
+min-height:100vh;
+margin:0;
+padding:20px;
 }
 
 .login-box{
@@ -13,6 +19,7 @@ padding:40px;
 border-radius:10px;
 box-shadow:0 0 10px rgba(0,0,0,0.1);
 width:300px;
+max-width:100%;
 text-align:center;
 }
 
@@ -20,6 +27,8 @@ text-align:center;
 width:100%;
 padding:10px;
 margin:10px 0;
+border:1px solid #ccc;
+border-radius:8px;
 }
 
 .login-box button{
@@ -28,6 +37,7 @@ padding:10px;
 background:green;
 color:white;
 border:none;
+border-radius:8px;
 cursor:pointer;
 }
 #role{
@@ -50,4 +60,43 @@ cursor:pointer;
   outline: none;
   border-color: #2e7d32;
   box-shadow: 0 0 0 2px rgba(46,125,50,0.2);
+}
+
+.role-select{
+  display:flex;
+  gap:10px;
+  margin:10px 0;
+}
+
+.role-card{
+  flex:1;
+  cursor:pointer;
+}
+
+.role-card input{
+  display:none;
+}
+
+.role-box{
+  padding:12px 8px;
+  border:2px solid #ddd;
+  border-radius:8px;
+  text-align:center;
+  font-weight:600;
+}
+
+.role-card input:checked + .role-box{
+  border-color:#2e7d32;
+  background:#e8f5e9;
+  color:#2e7d32;
+}
+
+@media (max-width:420px){
+  .login-box{
+    padding:24px 18px;
+  }
+
+  .role-select{
+    flex-direction:column;
+  }
 }
