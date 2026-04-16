@@ -2,10 +2,11 @@ from flask import Blueprint, request, jsonify, send_file
 from extensions import db
 from models import Order
 import os
+from dotenv import load_dotenv
 import requests
 import openpyxl
 from io import BytesIO
-
+load_dotenv()
 orders_bp = Blueprint("orders", __name__)
 
 
@@ -36,8 +37,9 @@ def send_order():
     db.session.commit()
 
     # Telegram xabar
-    TOKEN = os.environ.get("BOT_TOKEN")
-    CHAT_ID = os.environ.get("CHAT_ID")
+    TOKEN = os.getenv("BOT_TOKEN")
+    CHAT_ID = os.getenv("CHAT_ID")
+    print(TOKEN,CHAT_ID)
 
     if TOKEN and CHAT_ID:
         text = f"""
