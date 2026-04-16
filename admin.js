@@ -12,6 +12,35 @@ function logout() {
   window.location = "login.html";
 }
 
+function showServicePanel(serviceId, options = {}) {
+  const panels = Array.from(document.querySelectorAll("[data-service-panel]"));
+  const buttons = Array.from(document.querySelectorAll("[data-service-target]"));
+  const fallbackService = "disease";
+  const hasPanel = panels.some((panel) => panel.dataset.servicePanel === serviceId);
+  const activeService = hasPanel ? serviceId : fallbackService;
+
+  panels.forEach((panel) => {
+    const isActive = panel.dataset.servicePanel === activeService;
+    panel.classList.toggle("is-active", isActive);
+    panel.setAttribute("aria-hidden", String(!isActive));
+  });
+
+  buttons.forEach((button) => {
+    const isActive = button.dataset.serviceTarget === activeService;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+
+  if (options.updateHash && window.history?.replaceState) {
+    window.history.replaceState(null, "", `#${activeService}`);
+  }
+
+  if (options.scroll) {
+    const activePanel = panels.find((panel) => panel.dataset.servicePanel === activeService);
+    activePanel?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
 function escapeHtml(value) {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -478,6 +507,20 @@ async function analyzeDiseaseImage() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  const serviceButtons = document.querySelectorAll("[data-service-target]");
+  const initialService = window.location.hash ? window.location.hash.slice(1) : "disease";
+
+  showServicePanel(initialService, { scroll: false });
+
+  serviceButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      showServicePanel(button.dataset.serviceTarget || "disease", {
+        scroll: true,
+        updateHash: true,
+      });
+    });
+  });
+
   renderAdminProducts();
   renderOrders();
   loadStats();

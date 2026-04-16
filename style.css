@@ -1853,3 +1853,175 @@ button,
     width:100%;
   }
 }
+
+.service-menu-section{
+  padding-top:24px;
+  padding-bottom:10px;
+  overflow:visible;
+}
+
+.service-menu-copy{
+  max-width:720px;
+  margin:0 auto 18px;
+  text-align:center;
+}
+
+.service-kicker{
+  display:inline-flex;
+  align-items:center;
+  width:max-content;
+  padding:6px 10px;
+  border:1px solid #cfe3ce;
+  border-radius:8px;
+  background:#f3f8ef;
+  color:#2e7d32;
+  font-size:12px;
+  font-weight:800;
+  text-transform:uppercase;
+}
+
+.service-menu-copy h2,
+.service-panel-head h2{
+  margin:12px 0 8px;
+  color:#1f3d28;
+  font-family:Poppins,Inter,Arial,sans-serif;
+  font-size:26px;
+  line-height:1.2;
+}
+
+.service-menu-copy p,
+.service-panel-head p{
+  margin:0;
+  color:#5d6b60;
+  line-height:1.55;
+}
+
+.service-menu{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:10px;
+  max-width:920px;
+  margin:0 auto;
+}
+
+.service-tab{
+  background:#fff;
+  color:#1f3d28;
+  border:1px solid #dbe8d8;
+  border-radius:8px;
+  padding:14px 12px;
+  font-weight:800;
+  box-shadow:0 8px 18px rgba(35,64,40,0.06);
+}
+
+.service-tab:hover{
+  background:#f6fbf4;
+  border-color:#2e7d32;
+}
+
+.service-tab.is-active{
+  background:#2e7d32;
+  border-color:#2e7d32;
+  color:#fff;
+  box-shadow:none;
+}
+
+.service-panel{
+  display:none;
+  padding-top:24px;
+  padding-bottom:24px;
+}
+
+.service-panel.is-active{
+  display:block;
+}
+
+.service-panel-head{
+  max-width:760px;
+  margin:0 auto 20px;
+  text-align:center;
+}
+
+.disease-service-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:20px;
+  align-items:start;
+}
+
+.disease-service-grid .ai-chat-box{
+  width:100%;
+  max-width:none;
+  margin:0;
+}
+
+.disease-service-grid .disease-ai-box{
+  height:100%;
+  background:#fff;
+  border:1px solid #dfe8de;
+  border-radius:8px;
+  box-shadow:0 14px 36px rgba(35,64,40,0.08);
+}
+
+.disease-ai-copy h2{
+  margin:0;
+  color:#1f3d28;
+  font-family:Poppins,Inter,Arial,sans-serif;
+  font-size:24px;
+  line-height:1.2;
+}
+
+.admin-ai-section .ai-plant-wrapper{
+  width:min(760px,100%);
+  margin:0 auto;
+}
+
+.service-panel .section-title{
+  margin-top:0;
+}
+
+.admin-stats-grid{
+  width:100%;
+  max-width:1000px;
+  margin:20px auto;
+}
+
+.service-analytics{
+  margin:24px auto 0;
+  padding:0;
+}
+
+.service-panel .orders-table{
+  margin-top:16px;
+}
+
+@media (max-width:860px){
+  .disease-service-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media (max-width:700px){
+  .service-menu-section{
+    padding-top:18px;
+  }
+
+  .service-menu{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .service-menu-copy h2,
+  .service-panel-head h2{
+    font-size:23px;
+  }
+}
+
+@media (max-width:520px){
+  .service-menu{
+    grid-template-columns:1fr;
+  }
+
+  .service-tab{
+    width:100%;
+  }
+}

@@ -50,18 +50,34 @@ Chiqish
 
 </div>
 
-<section class="section admin-ai-section">
+<section class="section service-menu-section">
 
-<div class="admin-ai-grid">
-
-<div id="aiPlantBox" class="ai-plant-wrapper ai-dashboard-card">
-  <div class="ai-panel-head">
-    <span class="ai-panel-kicker">AI tavsiya</span>
-    <h2>AI ekish tavsiyasi</h2>
-    <p>Buyurtmalar va talabga qarab qaysi mahsulot foydaliroq ekanini kuzating.</p>
-  </div>
-  <div class="ai-loading-card">Ma'lumotlar yuklanmoqda...</div>
+<div class="service-menu-copy">
+<span class="service-kicker">Xizmatlar</span>
+<h2>Kerakli xizmatni tanlang</h2>
+<p>Har bir tugma faqat tanlangan xizmat bo'limini ochadi.</p>
 </div>
+
+<div class="service-menu" role="group" aria-label="Fermer paneli xizmatlari">
+<button type="button" class="service-tab is-active" data-service-target="disease" aria-pressed="true">Kasallik aniqlash</button>
+<button type="button" class="service-tab" data-service-target="plant" aria-pressed="false">Ekish tavsiyasi</button>
+<button type="button" class="service-tab" data-service-target="product-add" aria-pressed="false">Mahsulot qo'shish</button>
+<button type="button" class="service-tab" data-service-target="stats" aria-pressed="false">Statistika</button>
+<button type="button" class="service-tab" data-service-target="orders" aria-pressed="false">Buyurtmalar</button>
+<button type="button" class="service-tab" data-service-target="products" aria-pressed="false">Mahsulotlar</button>
+</div>
+
+</section>
+
+<section class="section service-panel is-active" data-service-panel="disease">
+
+<div class="service-panel-head">
+<span class="service-kicker">Kasallik aniqlash</span>
+<h2>AI Assistant va rasm orqali tahlil</h2>
+<p>Savol yozing yoki barg/meva rasmini yuklang.</p>
+</div>
+
+<div class="disease-service-grid">
 
 <div class="ai-chat-box ai-dashboard-card">
   <div class="ai-panel-head">
@@ -86,16 +102,10 @@ Chiqish
   </div>
 </div>
 
-</div>
-
-</section>
-
-<section class="section">
-
 <div class="disease-ai-box">
 
 <div class="disease-ai-copy">
-<h2 class="section-title">Rasm orqali kasallik aniqlash</h2>
+<h2>Rasm orqali kasallik aniqlash</h2>
 <p class="disease-ai-text">
 Barg yoki mevaning rasmini yuklang. AI ranglar va dog'lar ulushiga qarab ehtimoliy kasallikni chiqaradi.
 </p>
@@ -111,9 +121,24 @@ Barg yoki mevaning rasmini yuklang. AI ranglar va dog'lar ulushiga qarab ehtimol
 
 </div>
 
+</div>
+
 </section>
 
-<section class="section">
+<section class="section service-panel admin-ai-section" data-service-panel="plant">
+
+<div id="aiPlantBox" class="ai-plant-wrapper ai-dashboard-card">
+  <div class="ai-panel-head">
+    <span class="ai-panel-kicker">AI tavsiya</span>
+    <h2>AI ekish tavsiyasi</h2>
+    <p>Buyurtmalar va talabga qarab qaysi mahsulot foydaliroq ekanini kuzating.</p>
+  </div>
+  <div class="ai-loading-card">Ma'lumotlar yuklanmoqda...</div>
+</div>
+
+</section>
+
+<section class="section service-panel" data-service-panel="product-add">
 
 <h2 class="section-title">Mahsulot qo'shish</h2>
 
@@ -147,7 +172,11 @@ Qo'shish
 
 </section>
 
-<section class="section stats">
+<section class="section service-panel" data-service-panel="stats">
+
+<h2 class="section-title">Statistika va AI Analytics</h2>
+
+<div class="stats admin-stats-grid">
 
 <div class="stat">
 <h3 id="totalOrders">0</h3>
@@ -164,11 +193,9 @@ Qo'shish
 <p>Jami summa</p>
 </div>
 
-</section>
+</div>
 
-<h2 class="section-title">AI Analytics</h2>
-
-<div class="ai-box">
+<div class="ai-box service-analytics">
 
 <div class="ai-card">
 <h3>Eng ko'p sotilgan</h3>
@@ -182,7 +209,9 @@ Qo'shish
 
 </div>
 
-<section class="section">
+</section>
+
+<section class="section service-panel" data-service-panel="orders">
 
 <h2 class="section-title">Buyurtmalar</h2>
 
@@ -205,7 +234,7 @@ Qo'shish
 
 </section>
 
-<section class="section">
+<section class="section service-panel" data-service-panel="products">
 
 <h2 class="section-title">
 Mahsulotlar
