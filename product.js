@@ -243,6 +243,7 @@ async function loadAIInsight(product) {
     const data = await res.json()
 
     const box = document.getElementById(`ai-${product.id}`)
+    box.style.maxWidth="auto"
     if (!box) return
 
     let badge = ""

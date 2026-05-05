@@ -976,6 +976,7 @@ cursor:pointer;
 
 .ai-box-inner{
   margin-top:8px;
+  max-width: 453px;
   font-size:13px;
 }
 
