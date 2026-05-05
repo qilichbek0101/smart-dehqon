@@ -1,0 +1,631 @@
+[
+    {
+        "label": "Blueprint",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "send_file",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Blueprint",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Flask",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "extensions",
+        "description": "extensions",
+        "isExtraImport": true,
+        "detail": "extensions",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "extensions",
+        "description": "extensions",
+        "isExtraImport": true,
+        "detail": "extensions",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "extensions",
+        "description": "extensions",
+        "isExtraImport": true,
+        "detail": "extensions",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "extensions",
+        "description": "extensions",
+        "isExtraImport": true,
+        "detail": "extensions",
+        "documentation": {}
+    },
+    {
+        "label": "Order",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "Product",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "PriceHistory",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "Order",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "Product",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "PriceHistory",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "load_dotenv",
+        "importPath": "dotenv",
+        "description": "dotenv",
+        "isExtraImport": true,
+        "detail": "dotenv",
+        "documentation": {}
+    },
+    {
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
+        "documentation": {}
+    },
+    {
+        "label": "openpyxl",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "openpyxl",
+        "description": "openpyxl",
+        "detail": "openpyxl",
+        "documentation": {}
+    },
+    {
+        "label": "io",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "io",
+        "description": "io",
+        "detail": "io",
+        "documentation": {}
+    },
+    {
+        "label": "BytesIO",
+        "importPath": "io",
+        "description": "io",
+        "isExtraImport": true,
+        "detail": "io",
+        "documentation": {}
+    },
+    {
+        "label": "predict_price",
+        "importPath": "ai_predict",
+        "description": "ai_predict",
+        "isExtraImport": true,
+        "detail": "ai_predict",
+        "documentation": {}
+    },
+    {
+        "label": "crop_recommendation",
+        "importPath": "ai_predict",
+        "description": "ai_predict",
+        "isExtraImport": true,
+        "detail": "ai_predict",
+        "documentation": {}
+    },
+    {
+        "label": "recommend_price",
+        "importPath": "ai_predict",
+        "description": "ai_predict",
+        "isExtraImport": true,
+        "detail": "ai_predict",
+        "documentation": {}
+    },
+    {
+        "label": "get_ai_insight",
+        "importPath": "ai_predict",
+        "description": "ai_predict",
+        "isExtraImport": true,
+        "detail": "ai_predict",
+        "documentation": {}
+    },
+    {
+        "label": "analyze_disease_image",
+        "importPath": "ai_predict",
+        "description": "ai_predict",
+        "isExtraImport": true,
+        "detail": "ai_predict",
+        "documentation": {}
+    },
+    {
+        "label": "numpy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "numpy",
+        "description": "numpy",
+        "detail": "numpy",
+        "documentation": {}
+    },
+    {
+        "label": "LinearRegression",
+        "importPath": "sklearn.linear_model",
+        "description": "sklearn.linear_model",
+        "isExtraImport": true,
+        "detail": "sklearn.linear_model",
+        "documentation": {}
+    },
+    {
+        "label": "Image",
+        "importPath": "PIL",
+        "description": "PIL",
+        "isExtraImport": true,
+        "detail": "PIL",
+        "documentation": {}
+    },
+    {
+        "label": "CORS",
+        "importPath": "flask_cors",
+        "description": "flask_cors",
+        "isExtraImport": true,
+        "detail": "flask_cors",
+        "documentation": {}
+    },
+    {
+        "label": "Config",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "secure_filename",
+        "importPath": "werkzeug.utils",
+        "description": "werkzeug.utils",
+        "isExtraImport": true,
+        "detail": "werkzeug.utils",
+        "documentation": {}
+    },
+    {
+        "label": "orders_bp",
+        "importPath": "routes.orders",
+        "description": "routes.orders",
+        "isExtraImport": true,
+        "detail": "routes.orders",
+        "documentation": {}
+    },
+    {
+        "label": "products_bp",
+        "importPath": "routes.products",
+        "description": "routes.products",
+        "isExtraImport": true,
+        "detail": "routes.products",
+        "documentation": {}
+    },
+    {
+        "label": "SQLAlchemy",
+        "importPath": "flask_sqlalchemy",
+        "description": "flask_sqlalchemy",
+        "isExtraImport": true,
+        "detail": "flask_sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "send_order",
+        "kind": 2,
+        "importPath": "routes.orders",
+        "description": "routes.orders",
+        "peekOfCode": "def send_order():\n    data = request.get_json()\n    if not data:\n        return jsonify({\"error\": \"No data\"}), 400\n    product = data.get(\"product\")\n    price = data.get(\"price\")\n    phone = data.get(\"phone\")\n    if not product or not price or not phone:\n        return jsonify({\"error\": \"Missing fields\"}), 400\n    new_order = Order(",
+        "detail": "routes.orders",
+        "documentation": {}
+    },
+    {
+        "label": "get_orders",
+        "kind": 2,
+        "importPath": "routes.orders",
+        "description": "routes.orders",
+        "peekOfCode": "def get_orders():\n    orders = Order.query.order_by(Order.id.desc()).all()\n    return jsonify([\n        {\n            \"id\": o.id,\n            \"product\": o.product,\n            \"price\": o.price,\n            \"phone\": o.phone,\n            \"created_at\": o.created_at.strftime(\"%Y-%m-%d %H:%M:%S\")\n        }",
+        "detail": "routes.orders",
+        "documentation": {}
+    },
+    {
+        "label": "export_orders",
+        "kind": 2,
+        "importPath": "routes.orders",
+        "description": "routes.orders",
+        "peekOfCode": "def export_orders():\n    orders = Order.query.order_by(Order.id.desc()).all()\n    wb = openpyxl.Workbook()\n    ws = wb.active\n    ws.title = \"Orders\"\n    ws.append([\"ID\", \"Mahsulot\", \"Narx\", \"Telefon\", \"Sana\"])\n    for o in orders:\n        ws.append([\n            o.id,\n            o.product,",
+        "detail": "routes.orders",
+        "documentation": {}
+    },
+    {
+        "label": "top_products",
+        "kind": 2,
+        "importPath": "routes.orders",
+        "description": "routes.orders",
+        "peekOfCode": "def top_products():\n    from sqlalchemy import func\n    data = db.session.query(\n        Order.product,\n        func.count(Order.id)\n    ).group_by(Order.product).all()\n    result = []\n    # 🔥 LISTGA O‘TKAZAMIZ\n    for product, count in data:\n        result.append({",
+        "detail": "routes.orders",
+        "documentation": {}
+    },
+    {
+        "label": "orders_bp",
+        "kind": 5,
+        "importPath": "routes.orders",
+        "description": "routes.orders",
+        "peekOfCode": "orders_bp = Blueprint(\"orders\", __name__)\n# ==============================\n# BUYURTMA YUBORISH\n# ==============================\n@orders_bp.route(\"/send-order\", methods=[\"POST\"])\ndef send_order():\n    data = request.get_json()\n    if not data:\n        return jsonify({\"error\": \"No data\"}), 400\n    product = data.get(\"product\")",
+        "detail": "routes.orders",
+        "documentation": {}
+    },
+    {
+        "label": "get_products",
+        "kind": 2,
+        "importPath": "routes.products",
+        "description": "routes.products",
+        "peekOfCode": "def get_products():\n    products = Product.query.order_by(Product.id.desc()).all()\n    result = []\n    seen = set()\n    for p in products:\n        # duplicate mahsulotlarni chiqarib tashlaymiz\n        if p.name in seen:\n            continue\n        seen.add(p.name)\n        result.append({",
+        "detail": "routes.products",
+        "documentation": {}
+    },
+    {
+        "label": "price_stats",
+        "kind": 2,
+        "importPath": "routes.products",
+        "description": "routes.products",
+        "peekOfCode": "def price_stats(name):\n    data = PriceHistory.query.filter_by(\n        product_name=name\n    ).order_by(PriceHistory.created_at.desc()).limit(30).all()\n    result = []\n    for d in data:\n        result.append({\n            \"price\": int(d.price),\n            \"date\": d.created_at.strftime(\"%d-%m\")\n        })",
+        "detail": "routes.products",
+        "documentation": {}
+    },
+    {
+        "label": "price_predict",
+        "kind": 2,
+        "importPath": "routes.products",
+        "description": "routes.products",
+        "peekOfCode": "def price_predict(name):\n    history = PriceHistory.query.filter_by(\n        product_name=name\n    ).all()\n    prices = [int(p.price) for p in history][-30:]\n    if len(prices) < 2:\n        return jsonify([])\n    predictions = predict_price(prices)\n    return jsonify(predictions)\n# =========================",
+        "detail": "routes.products",
+        "documentation": {}
+    },
+    {
+        "label": "price_recommend",
+        "kind": 2,
+        "importPath": "routes.products",
+        "description": "routes.products",
+        "peekOfCode": "def price_recommend(name):\n    history = PriceHistory.query.filter_by(\n        product_name=name\n    ).order_by(PriceHistory.created_at).all()\n    prices = [int(p.price) for p in history][-30:]\n    if len(prices) < 3:\n        return jsonify({\"recommend\": prices[-1] if prices else 0})\n    rec = recommend_price(prices)\n    return jsonify({\"recommend\": rec})\n# =========================",
+        "detail": "routes.products",
+        "documentation": {}
+    },
+    {
+        "label": "delete_product",
+        "kind": 2,
+        "importPath": "routes.products",
+        "description": "routes.products",
+        "peekOfCode": "def delete_product(id):\n    product = Product.query.get(id)\n    if not product:\n        return jsonify({\"error\": \"Product not found\"}), 404\n    PriceHistory.query.filter_by(product_name=product.name).delete()\n    db.session.delete(product)\n    db.session.commit()\n    return jsonify({\"status\": \"deleted\"})\n# =========================\n# UPDATE PRODUCT",
+        "detail": "routes.products",
+        "documentation": {}
+    },
+    {
+        "label": "update_product",
+        "kind": 2,
+        "importPath": "routes.products",
+        "description": "routes.products",
+        "peekOfCode": "def update_product(id):\n    data = request.get_json(silent=True) or {}\n    product = Product.query.get(id)\n    if not product:\n        return jsonify({\"error\": \"Product not found\"}), 404\n    old_name = product.name\n    new_name = (data.get(\"name\") or product.name or \"\").strip()\n    new_unit = (data.get(\"unit\") or product.unit or \"kg\").strip()\n    if not new_name:\n        return jsonify({\"error\": \"Mahsulot nomini kiriting\"}), 400",
+        "detail": "routes.products",
+        "documentation": {}
+    },
+    {
+        "label": "crop_recommend",
+        "kind": 2,
+        "importPath": "routes.products",
+        "description": "routes.products",
+        "peekOfCode": "def crop_recommend():\n    products = Product.query.all()\n    orders = {}\n    all_orders = Order.query.all()\n    for o in all_orders:\n        orders[o.product] = orders.get(o.product, 0) + 1\n    rec = crop_recommendation(products, orders)\n    return jsonify(rec)",
+        "detail": "routes.products",
+        "documentation": {}
+    },
+    {
+        "label": "products_bp",
+        "kind": 5,
+        "importPath": "routes.products",
+        "description": "routes.products",
+        "peekOfCode": "products_bp = Blueprint(\"products\", __name__)\n# =========================\n# PRODUCT LIST\n# =========================\n@products_bp.route(\"/products\")\ndef get_products():\n    products = Product.query.order_by(Product.id.desc()).all()\n    result = []\n    seen = set()\n    for p in products:",
+        "detail": "routes.products",
+        "documentation": {}
+    },
+    {
+        "label": "predict_price",
+        "kind": 2,
+        "importPath": "ai_predict",
+        "description": "ai_predict",
+        "peekOfCode": "def predict_price(price_history):\n    if len(price_history) < 2:\n        return []\n    X = np.arange(len(price_history)).reshape(-1, 1)\n    y = np.array(price_history)\n    model = LinearRegression()\n    model.fit(X, y)\n    future_days = 5\n    future_X = np.arange(\n        len(price_history),",
+        "detail": "ai_predict",
+        "documentation": {}
+    },
+    {
+        "label": "crop_recommendation",
+        "kind": 2,
+        "importPath": "ai_predict",
+        "description": "ai_predict",
+        "peekOfCode": "def crop_recommendation(products, orders):\n    scores = {}\n    for p in products:\n        demand = orders.get(p.name, 0)\n        price = p.price\n        score = demand * 2 + price / 1000\n        scores[p.name] = score\n    best = sorted(scores.items(), key=lambda x: x[1], reverse=True)\n    return best\n# =========================",
+        "detail": "ai_predict",
+        "documentation": {}
+    },
+    {
+        "label": "recommend_price",
+        "kind": 2,
+        "importPath": "ai_predict",
+        "description": "ai_predict",
+        "peekOfCode": "def recommend_price(prices):\n    if len(prices) < 3:\n        return prices[-1] if prices else 0\n    avg = np.mean(prices[-5:])\n    trend = prices[-1] - prices[-3]\n    recommended = avg + trend * 0.5\n    return int(recommended)\n    # ============ STARTUP FULL VILOYAT===========\ndef get_ai_insight(price_history):\n    if len(price_history) < 3:",
+        "detail": "ai_predict",
+        "documentation": {}
+    },
+    {
+        "label": "get_ai_insight",
+        "kind": 2,
+        "importPath": "ai_predict",
+        "description": "ai_predict",
+        "peekOfCode": "def get_ai_insight(price_history):\n    if len(price_history) < 3:\n        return {\n            \"trend\": \"stable\",\n            \"message\": \"Ma'lumot yetarli emas\",\n            \"confidence\": 50,\n            \"explanation\": \"Yetarli tarixiy ma'lumot yo‘q\"\n        }\n    last = price_history[-1]\n    first = price_history[0]",
+        "detail": "ai_predict",
+        "documentation": {}
+    },
+    {
+        "label": "analyze_disease_image",
+        "kind": 2,
+        "importPath": "ai_predict",
+        "description": "ai_predict",
+        "peekOfCode": "def analyze_disease_image(image_bytes):\n    features = _extract_image_features(image_bytes)\n    green_ratio = features[\"green_ratio\"]\n    yellow_ratio = features[\"yellow_ratio\"]\n    brown_ratio = features[\"brown_ratio\"]\n    white_ratio = features[\"white_ratio\"]\n    dark_ratio = features[\"dark_ratio\"]\n    disease_key = \"soglom\"\n    confidence = 58\n    if white_ratio > 0.12 and green_ratio > 0.18:",
+        "detail": "ai_predict",
+        "documentation": {}
+    },
+    {
+        "label": "DISEASE_LIBRARY",
+        "kind": 5,
+        "importPath": "ai_predict",
+        "description": "ai_predict",
+        "peekOfCode": "DISEASE_LIBRARY = {\n    \"fitoftora\": {\n        \"label\": \"Fitoftora ehtimoli\",\n        \"sabab\": \"To'q jigarrang va qora dog'lar ko'paygani barg chirishi yoki zamburug' zararlanishini ko'rsatmoqda.\",\n        \"tavsiyalar\": [\n            \"Zararlangan barg va mevalarni ajratib oling\",\n            \"Issiqxonada namlikni kamaytiring va shamollatishni kuchaytiring\",\n            \"Mis yoki mankozeb asosidagi fungitsidni agronom tavsiyasi bilan qo'llang\"\n        ],\n        \"dori\": [\"Ridomil Gold\", \"Kurzat\", \"Revus\"],",
+        "detail": "ai_predict",
+        "documentation": {}
+    },
+    {
+        "label": "seed_default_products",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def seed_default_products():\n    if Product.query.first():\n        return\n    for item in DEFAULT_PRODUCTS:\n        product = Product(**item)\n        db.session.add(product)\n        db.session.add(PriceHistory(product_name=item[\"name\"], price=item[\"price\"]))\n    db.session.commit()\n# =====================\n# APP INIT (FAQAT 1 MARTA)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "add_product",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def add_product():\n    name = request.form.get(\"name\")\n    price = request.form.get(\"price\")\n    unit = request.form.get(\"unit\") or \"kg\"\n    image = request.files.get(\"image\")\n    if not name or not price:\n        return jsonify({\"error\": \"missing data\"}), 400\n    name = name.strip().title()\n    try:\n        price = int(price)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "ai_insight",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def ai_insight(product_name):\n    history = PriceHistory.query \\\n        .filter(PriceHistory.product_name.ilike(product_name)) \\\n        .order_by(PriceHistory.created_at.asc()) \\\n        .all()\n    prices = [h.price for h in history]\n    result = get_ai_insight(prices)\n    return jsonify(result)\n# =====================\n# 🔥 AI CHAT (ENG MUHIM)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "ai_chat",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def ai_chat():\n    data = request.get_json()\n    text = data.get(\"text\", \"\").lower()\n#    if \"pomidor\" in text:\n    if \"dog\" in text or \"qora\" in text:\n        return jsonify({\n            \"kasallik\": \"Fitoftora\",\n            \"confidence\": 85,\n            \"sabab\": \"Yuqori namlik va qo‘ziqorin kasalligi\",\n            \"tavsiyalar\": [",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "analyze_disease",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def analyze_disease():\n    image = request.files.get(\"image\")\n    if not image or not image.filename:\n        return jsonify({\"error\": \"Rasm yuborilmadi\"}), 400\n    filename = secure_filename(image.filename.lower())\n    allowed = (\".jpg\", \".jpeg\", \".png\", \".webp\")\n    if not filename.endswith(allowed):\n        return jsonify({\"error\": \"Faqat jpg, jpeg, png, webp ruxsat\"}), 400\n    image_bytes = image.read()\n    if not image_bytes:",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "home",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def home():\n    return app.send_static_file(\"index.html\")\n# =====================\n# RUN\n# =====================\nif __name__ == \"__main__\":\n    app.run(host=\"0.0.0.0\", port=5002, debug=True)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "DEFAULT_PRODUCTS",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "DEFAULT_PRODUCTS = [\n    {\"name\": \"Piyoz\", \"price\": 100, \"unit\": \"kg\", \"image\": \"/image/piyoz.jpeg\"},\n    {\"name\": \"Pomidor\", \"price\": 40000, \"unit\": \"kg\", \"image\": \"/image/pomidor.jpeg\"},\n    {\"name\": \"Kartoshka\", \"price\": 15000, \"unit\": \"kg\", \"image\": \"/image/kartoshka.jpeg\"},\n    {\"name\": \"Olma\", \"price\": 10000, \"unit\": \"kg\", \"image\": \"/image/olma.jpg\"},\n    {\"name\": \"Qovun\", \"price\": 20000, \"unit\": \"dona\", \"image\": \"/image/qovun.jpg\"},\n    {\"name\": \"Tarvuz\", \"price\": 15000, \"unit\": \"dona\", \"image\": \"/image/tarvuz.jfif\"},\n    {\"name\": \"Karam\", \"price\": 5000, \"unit\": \"kg\", \"image\": \"/image/karam_rasmi.jfif\"},\n    {\"name\": \"Shaftoli\", \"price\": 10000, \"unit\": \"kg\", \"image\": \"/image/shaftoli.jfif\"},\n    {\"name\": \"Anor\", \"price\": 12000, \"unit\": \"kg\", \"image\": \"/image/anor.jpg\"},",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app = Flask(__name__, static_folder=\".\", static_url_path=\"\")\napp.config.from_object(Config)\nCORS(app)\ndb.init_app(app)\n# =====================\n# DB CREATE\n# =====================\nwith app.app_context():\n    db.create_all()\n    seed_default_products()",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "Config",
+        "kind": 6,
+        "importPath": "config",
+        "description": "config",
+        "peekOfCode": "class Config:\n    DB_URL = os.environ.get(\"DATABASE_URL\")\n    # Render postgres fix\n    if DB_URL and DB_URL.startswith(\"postgres://\"):\n        DB_URL = DB_URL.replace(\"postgres://\", \"postgresql://\", 1)\n    # Agar Render bo'lmasa lokal SQLite ishlaydi\n    SQLALCHEMY_DATABASE_URI = DB_URL or \"sqlite:///database.db\"\n    SQLALCHEMY_TRACK_MODIFICATIONS = False",
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "kind": 5,
+        "importPath": "extensions",
+        "description": "extensions",
+        "peekOfCode": "db = SQLAlchemy()",
+        "detail": "extensions",
+        "documentation": {}
+    },
+    {
+        "label": "Product",
+        "kind": 6,
+        "importPath": "models",
+        "description": "models",
+        "peekOfCode": "class Product(db.Model):\n    id = db.Column(db.Integer, primary_key=True)\n    name = db.Column(db.String(100), unique=True)\n    price = db.Column(db.Integer)\n    image = db.Column(db.String(300))\n    unit = db.Column(db.String(20), default=\"kg\")\nclass Order(db.Model):\n    id = db.Column(db.Integer, primary_key=True)\n    product = db.Column(db.String(100))\n    price = db.Column(db.Integer)",
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "Order",
+        "kind": 6,
+        "importPath": "models",
+        "description": "models",
+        "peekOfCode": "class Order(db.Model):\n    id = db.Column(db.Integer, primary_key=True)\n    product = db.Column(db.String(100))\n    price = db.Column(db.Integer)\n    phone = db.Column(db.String(50))\n    created_at = db.Column(db.DateTime, default=datetime.utcnow)\nclass PriceHistory(db.Model):\n    id = db.Column(db.Integer, primary_key=True)\n    product_name = db.Column(db.String(100))\n    price = db.Column(db.Integer)",
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "PriceHistory",
+        "kind": 6,
+        "importPath": "models",
+        "description": "models",
+        "peekOfCode": "class PriceHistory(db.Model):\n    id = db.Column(db.Integer, primary_key=True)\n    product_name = db.Column(db.String(100))\n    price = db.Column(db.Integer)\n    created_at = db.Column(\n        db.DateTime,\n        default=lambda: datetime.utcnow() + timedelta(hours=5)\n    )",
+        "detail": "models",
+        "documentation": {}
+    }
+]
