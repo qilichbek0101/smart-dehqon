@@ -1,47 +1,581 @@
 <!DOCTYPE html>
 <html lang="uz">
-
 <head>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Mahsulotlar</title>
+  <title>Smart Dehqon — Mahsulotlar</title>
 
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Inter&display=swap" rel="stylesheet">
+  <!-- Leaflet — defer bilan yuklanadi, xato bo'lmaydi -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
+  <style>
+  /* ====== TABS ====== */
+  .sd-tabs {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    padding: 14px 24px 0;
+    background: #fff;
+    border-bottom: 2px solid #e8f5e9;
+    position: sticky; top: 90px; z-index: 50;
+  }
+  .sd-tab {
+    padding: 9px 18px; border-radius: 30px 30px 0 0;
+    background: transparent; border: none;
+    font-family: Inter, sans-serif; font-size: 13.5px; font-weight: 600;
+    color: #6b7c6e; cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all .18s;
+  }
+  .sd-tab:hover { color: #2e7d32; }
+  .sd-tab.active {
+    color: #2e7d32;
+    border-bottom: 3px solid #2e7d32;
+    background: #f0f8f0;
+  }
+  .sd-tab .tab-badge {
+    background: #2e7d32; color: #fff;
+    font-size: 10px; font-weight: 700;
+    padding: 1px 6px; border-radius: 20px;
+    margin-left: 4px; vertical-align: middle;
+  }
+
+  /* ====== PAGE PANELS ====== */
+  .sd-panel { display: none; }
+  .sd-panel.active { display: block; }
+
+  /* ====== FILTER CHIPS ====== */
+  .filter-bar {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    padding: 20px 20px 0;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .fchip {
+    padding: 7px 16px; border-radius: 30px;
+    border: 1.5px solid #c8e6c9;
+    background: #fff; font-size: 12.5px; font-weight: 500;
+    color: #555; cursor: pointer; transition: all .18s;
+  }
+  .fchip:hover, .fchip.active {
+    background: #2e7d32; color: #fff; border-color: #2e7d32;
+  }
+
+  /* ====== DRUG GRID ====== */
+  .drug-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 18px; padding: 20px;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .drug-card {
+    background: #fff; border-radius: 14px;
+    border: 1px solid #e4efe4; overflow: hidden;
+    box-shadow: 0 4px 16px rgba(46,125,50,0.07);
+    transition: transform .2s, box-shadow .2s; cursor: pointer;
+  }
+  .drug-card:hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(46,125,50,0.13); }
+  .drug-card-emoji {
+    height: 130px; display: flex; align-items: center; justify-content: center;
+    font-size: 60px;
+    background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+  }
+  .drug-card-body { padding: 14px 16px 16px; }
+  .drug-type-pill {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    letter-spacing: .8px; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 20px; margin-bottom: 7px;
+  }
+  .pill-i { background: #fff3e0; color: #e65100; }
+  .pill-f { background: #e8f5e9; color: #1b5e20; }
+  .pill-h { background: #e3f2fd; color: #1565c0; }
+  .pill-g { background: #fce4ec; color: #880e4f; }
+  .pill-b { background: #f3e5f5; color: #6a1b9a; }
+  .drug-card h3 {
+    font-family: Poppins, sans-serif; font-size: 16px; font-weight: 700;
+    color: #1b2e1e; margin: 0 0 5px;
+  }
+  .drug-card p { font-size: 12.5px; color: #6b7c6e; line-height: 1.55; margin: 0 0 10px; }
+  .drug-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 10px; border-top: 1px solid #e8f5e9;
+  }
+  .drug-price { font-family: Poppins, sans-serif; font-size: 15px; font-weight: 700; color: #2e7d32; }
+  .drug-avail {
+    font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+  }
+  .av-yes { background: #e8f5e9; color: #2e7d32; }
+  .av-low { background: #fff3e0; color: #e65100; }
+  .drug-store-info { font-size: 11px; color: #9e9e9e; margin-top: 6px; }
+  .drug-detail-btn {
+    width: 100%; margin-top: 12px; padding: 10px;
+    background: #2e7d32; color: #fff; border: none;
+    border-radius: 10px; font-family: Poppins, sans-serif;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: background .2s;
+  }
+  .drug-detail-btn:hover { background: #1b5e20; }
+
+  /* ====== DRUG MODAL ====== */
+  .dmodal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.55); backdrop-filter: blur(3px);
+    z-index: 2000; align-items: center; justify-content: center; padding: 16px;
+  }
+  .dmodal-overlay.open { display: flex; }
+  .dmodal {
+    background: #fff; border-radius: 20px;
+    max-width: 640px; width: 100%;
+    max-height: 88vh; overflow-y: auto;
+    box-shadow: 0 24px 80px rgba(0,0,0,.25);
+    animation: mIn .28s ease;
+  }
+  @keyframes mIn {
+    from { opacity:0; transform:translateY(24px) scale(.97); }
+    to   { opacity:1; transform:none; }
+  }
+  .dmodal-head {
+    background: linear-gradient(135deg, #1b5e20, #2e7d32);
+    color: #fff; padding: 26px 28px 22px; position: relative;
+  }
+  .dmodal-close {
+    position: absolute; top: 16px; right: 18px;
+    background: rgba(255,255,255,.2); border: none; color: #fff;
+    width: 34px; height: 34px; border-radius: 50%; font-size: 18px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background .18s;
+  }
+  .dmodal-close:hover { background: rgba(255,255,255,.35); }
+  .dmodal-emo { font-size: 44px; margin-bottom: 8px; }
+  .dmodal-head h2 { font-family: Poppins, sans-serif; font-size: 22px; margin: 0; }
+  .dmodal-body { padding: 24px 28px; }
+  .info-grid2 {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px;
+  }
+  .info-item label {
+    display: block; font-size: 10px; font-weight: 700;
+    letter-spacing: .9px; text-transform: uppercase; color: #9e9e9e; margin-bottom: 3px;
+  }
+  .info-item span { font-size: 14px; font-weight: 500; color: #1b2e1e; }
+  .dmodal-section { margin-bottom: 18px; }
+  .dmodal-section h4 {
+    font-family: Poppins, sans-serif; font-size: 14px; font-weight: 700;
+    color: #1b2e1e; margin-bottom: 8px;
+    padding-bottom: 6px; border-bottom: 1px solid #e8f5e9;
+  }
+  .dmodal-section p, .dmodal-section li { font-size: 13.5px; color: #5d6b60; line-height: 1.65; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 7px; }
+  .stag {
+    background: #f1f8e9; color: #2e7d32; font-size: 12px; font-weight: 500;
+    padding: 3px 11px; border-radius: 20px;
+  }
+  .store-rows { display: flex; flex-direction: column; gap: 8px; }
+  .store-row-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; background: #f9faf9; border-radius: 10px;
+    border: 1px solid #e8f5e9;
+  }
+  .store-row-item .sname { font-weight: 600; font-size: 13.5px; }
+  .store-row-item .scity { font-size: 11.5px; color: #9e9e9e; }
+  .store-row-item .sstock {
+    font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+  }
+  .warn-box {
+    background: #fff8e1; border: 1px solid #ffe082;
+    border-radius: 10px; padding: 12px 14px;
+    font-size: 13px; color: #5f4007; margin-top: 14px;
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+
+  /* ====== MAP ====== */
+  .map-section { padding: 20px; max-width: 1100px; margin: 0 auto; }
+  .map-wrap {
+    border-radius: 18px; overflow: hidden; height: 460px;
+    border: 1px solid #e4efe4;
+    box-shadow: 0 6px 24px rgba(46,125,50,0.1);
+  }
+  #sd-map { height: 100%; width: 100%; }
+  .map-legend {
+    display: flex; gap: 18px; flex-wrap: wrap; margin-top: 12px;
+    padding: 12px 16px; background: #fff; border-radius: 10px;
+    border: 1px solid #e4efe4; font-size: 13px;
+  }
+  .leg-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .leg-item { display: flex; align-items: center; gap: 7px; }
+
+  /* ====== AGRONOMLAR ====== */
+  .agro-section { padding: 20px; max-width: 1100px; margin: 0 auto; }
+  .agro-auth {
+    background: #fff; border-radius: 14px; border: 1px solid #e4efe4;
+    padding: 24px; margin-bottom: 20px;
+  }
+  .agro-auth h3 { font-family: Poppins, sans-serif; font-size: 18px; margin: 0 0 6px; }
+  .agro-auth p { color: #6b7c6e; font-size: 13.5px; margin: 0 0 16px; }
+  .auth-form { display: flex; flex-direction: column; gap: 10px; max-width: 340px; }
+  .auth-form input, .auth-form select {
+    padding: 11px 14px; border: 1.5px solid #c8e6c9; border-radius: 10px;
+    font-family: Inter, sans-serif; font-size: 13.5px; color: #1b2e1e;
+    background: #f9faf9; outline: none;
+  }
+  .auth-form input:focus, .auth-form select:focus { border-color: #2e7d32; }
+  .auth-form button {
+    padding: 12px; background: #2e7d32; color: #fff; border: none;
+    border-radius: 10px; font-family: Poppins, sans-serif;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .user-bar {
+    display: flex; align-items: center; gap: 12px;
+    justify-content: space-between; flex-wrap: wrap;
+  }
+  .user-ava {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: #2e7d32; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: Poppins, sans-serif; font-size: 18px; font-weight: 700; flex-shrink: 0;
+  }
+  .user-out-btn {
+    padding: 7px 14px; background: transparent; color: #9e9e9e;
+    border: 1.5px solid #e0e0e0; border-radius: 8px; font-size: 13px; cursor: pointer;
+  }
+
+  .agro-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px; margin-bottom: 24px;
+  }
+  .agro-card {
+    background: #fff; border-radius: 14px; border: 1px solid #e4efe4;
+    padding: 22px; text-align: center;
+    transition: all .2s; cursor: pointer;
+  }
+  .agro-card:hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(46,125,50,0.1); }
+  .agro-card.sel { border-color: #2e7d32; box-shadow: 0 0 0 3px rgba(46,125,50,0.14); }
+  .agro-ava {
+    width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 10px;
+    background: linear-gradient(135deg, #1b5e20, #4caf50);
+    display: flex; align-items: center; justify-content: center;
+    font-family: Poppins, sans-serif; font-size: 26px; font-weight: 800; color: #fff;
+  }
+  .agro-card h3 { font-family: Poppins, sans-serif; font-size: 15px; font-weight: 700; margin: 0 0 3px; }
+  .agro-spec { font-size: 11.5px; color: #2e7d32; font-weight: 600; margin-bottom: 5px; }
+  .agro-region { font-size: 11.5px; color: #9e9e9e; margin-bottom: 10px; }
+  .agro-stars { margin-bottom: 10px; }
+  .star { color: #fbbf24; }
+  .star.e { color: #d1d5db; }
+  .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+  .dot-on { background: #22c55e; }
+  .dot-busy { background: #f59e0b; }
+  .dot-off { background: #9ca3af; }
+  .agro-status { font-size: 11.5px; color: #9e9e9e; margin-bottom: 14px; }
+  .agro-chat-btn {
+    width: 100%; padding: 9px; background: #2e7d32; color: #fff;
+    border: none; border-radius: 10px; font-family: Inter, sans-serif;
+    font-size: 13px; font-weight: 600; cursor: pointer; transition: background .18s;
+  }
+  .agro-chat-btn:hover { background: #1b5e20; }
+
+  /* ====== CHAT ====== */
+  .chat-panel {
+    background: #fff; border-radius: 16px; border: 1px solid #e4efe4;
+    overflow: hidden; box-shadow: 0 6px 24px rgba(46,125,50,0.08);
+    margin-top: 4px;
+  }
+  .chat-hdr {
+    background: linear-gradient(135deg, #1b5e20, #2e7d32);
+    color: #fff; padding: 16px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .chat-hdr-ava {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(255,255,255,.22);
+    display: flex; align-items: center; justify-content: center;
+    font-family: Poppins, sans-serif; font-size: 18px; font-weight: 700;
+  }
+  .chat-hdr-info h4 { font-family: Poppins, sans-serif; font-size: 15px; margin: 0; }
+  .chat-hdr-info p { font-size: 11.5px; opacity: .8; margin: 0; }
+  .chat-close-btn {
+    margin-left: auto; background: rgba(255,255,255,.2);
+    border: none; color: #fff; border-radius: 50%;
+    width: 32px; height: 32px; font-size: 16px; cursor: pointer;
+  }
+  .chat-msgs {
+    height: 360px; overflow-y: auto;
+    padding: 16px; display: flex; flex-direction: column; gap: 12px;
+    background: #f6f7f5;
+  }
+  .msg-row { max-width: 78%; display: flex; flex-direction: column; gap: 3px; }
+  .msg-row.sent { align-self: flex-end; align-items: flex-end; }
+  .msg-row.recv { align-self: flex-start; }
+  .msg-bub {
+    padding: 10px 14px; border-radius: 16px;
+    font-size: 13.5px; line-height: 1.55;
+  }
+  .recv .msg-bub {
+    background: #fff; color: #1b2e1e;
+    border-radius: 4px 16px 16px 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+  .sent .msg-bub {
+    background: #2e7d32; color: #fff;
+    border-radius: 16px 16px 4px 16px;
+  }
+  .msg-img-preview { max-width: 200px; border-radius: 10px; margin-bottom: 3px; cursor: pointer; }
+  .msg-time { font-size: 10.5px; color: #9e9e9e; }
+  .chat-inp-area {
+    padding: 12px 16px; border-top: 1px solid #e4efe4;
+    display: flex; gap: 8px; align-items: flex-end; background: #fff;
+  }
+  .chat-img-label {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: #f9faf9; border: 1.5px solid #e4efe4;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; cursor: pointer; flex-shrink: 0; transition: background .18s;
+  }
+  .chat-img-label:hover { background: #e8f5e9; }
+  #chat-file-inp { display: none; }
+  .chat-textarea {
+    flex: 1; resize: none; min-height: 38px; max-height: 90px;
+    border: 1.5px solid #e4efe4; border-radius: 10px;
+    padding: 9px 12px; font-family: Inter, sans-serif;
+    font-size: 13.5px; color: #1b2e1e; background: #f9faf9; outline: none;
+  }
+  .chat-textarea:focus { border-color: #2e7d32; }
+  .chat-send {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: #2e7d32; border: none; color: #fff;
+    font-size: 16px; cursor: pointer; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .18s;
+  }
+  .chat-send:hover { background: #1b5e20; }
+
+  /* ====== AI ASSISTANT ====== */
+  .ai-section { padding: 20px; max-width: 900px; margin: 0 auto; }
+  .ai-intro-card {
+    background: linear-gradient(135deg, #0d1f12, #1b5e20);
+    color: #fff; border-radius: 18px; padding: 28px 28px 24px;
+    margin-bottom: 22px; display: flex; gap: 20px;
+    align-items: flex-start; flex-wrap: wrap;
+  }
+  .ai-intro-icon {
+    font-size: 48px;
+    background: rgba(163,230,53,.14);
+    border-radius: 16px; padding: 12px; flex-shrink: 0;
+  }
+  .ai-intro-card h2 {
+    font-family: Poppins, sans-serif; font-size: 22px; font-weight: 700;
+    margin: 0 0 7px;
+  }
+  .ai-intro-card h2 em { color: #a3e635; font-style: normal; }
+  .ai-intro-card p { font-size: 13.5px; opacity: .82; line-height: 1.65; margin: 0 0 12px; }
+  .ai-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ai-tag {
+    background: rgba(163,230,53,.16); color: #a3e635;
+    font-size: 11.5px; font-weight: 700;
+    padding: 4px 11px; border-radius: 20px;
+    border: 1px solid rgba(163,230,53,.25);
+  }
+
+  .ai-chat-wrap {
+    background: #fff; border-radius: 16px; border: 1px solid #e4efe4;
+    overflow: hidden; box-shadow: 0 6px 24px rgba(46,125,50,0.08);
+  }
+  .ai-chat-hdr {
+    background: linear-gradient(135deg, #0d1f12, #1b5e20);
+    color: #fff; padding: 16px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .ai-ava {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: #a3e635; color: #0d1f12;
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+  }
+  .ai-chat-hdr h4 { font-family: Poppins, sans-serif; font-size: 15px; margin: 0; }
+  .ai-chat-hdr p { font-size: 11.5px; opacity: .78; margin: 0; }
+  .ai-online-badge {
+    margin-left: auto; background: rgba(163,230,53,.2);
+    border: 1px solid rgba(163,230,53,.35);
+    color: #a3e635; font-size: 11px; font-weight: 700;
+    padding: 4px 12px; border-radius: 20px;
+  }
+  .ai-msgs {
+    height: 400px; overflow-y: auto;
+    padding: 16px; display: flex; flex-direction: column; gap: 12px;
+    background: #f6f7f5;
+  }
+  .ai-quick-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
+  .ai-qbtn {
+    padding: 6px 13px; background: #fff; border: 1.5px solid #e4efe4;
+    border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer;
+    color: #1b2e1e; transition: all .18s;
+  }
+  .ai-qbtn:hover { border-color: #2e7d32; color: #2e7d32; }
+
+  /* Typing dots */
+  .typing-wrap { display: flex; gap: 5px; align-items: center; padding: 6px 0; }
+  .typing-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #9e9e9e;
+    animation: bounce 1.2s infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: .2s; }
+  .typing-dot:nth-child(3) { animation-delay: .4s; }
+  @keyframes bounce {
+    0%,80%,100% { transform: translateY(0); opacity: .45; }
+    40% { transform: translateY(-7px); opacity: 1; }
+  }
+
+  .ai-inp-area {
+    padding: 12px 16px; border-top: 1px solid #e4efe4;
+    display: flex; gap: 8px; background: #fff;
+  }
+  .ai-input {
+    flex: 1; padding: 11px 14px; border: 1.5px solid #e4efe4;
+    border-radius: 10px; font-family: Inter, sans-serif; font-size: 13.5px;
+    background: #f9faf9; outline: none; color: #1b2e1e;
+  }
+  .ai-input:focus { border-color: #2e7d32; }
+  .ai-send {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: #2e7d32; border: none; color: #fff;
+    font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .18s;
+  }
+  .ai-send:hover { background: #1b5e20; }
+
+  /* Image preview overlay */
+  .img-full-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.85); z-index: 9999;
+    align-items: center; justify-content: center;
+  }
+  .img-full-overlay.open { display: flex; }
+  .img-full-overlay img { max-width: 90vw; max-height: 90vh; border-radius: 10px; }
+  .img-full-close {
+    position: absolute; top: 18px; right: 18px;
+    background: rgba(255,255,255,.18); border: none; color: #fff;
+    width: 40px; height: 40px; border-radius: 50%; font-size: 22px; cursor: pointer;
+  }
+  
+  </style>
 </head>
 
 <body>
 
+<!-- ========== ORIGINAL HEADER ========== -->
+<header class="header">
+  <a href="index.html" class="home-btn">← Bosh sahifa</a>
+  <a href="login.html" class="admin-btn" id="roleBtn">Sotuvchilar uchun</a>
+  <div class="header-container">
+    <img src="image/logo3.jpg" class="logo" alt="Logo">
+    <div class="brand-text">
+      <h1>Smart Dehqon</h1>
+      <p>Fermer va xaridorni bog'laymiz</p>
+    </div>
+  </div>
+</header>
 
-  <!-- HEADER -->
+<!-- ========== TABS ========== -->
+<div class="sd-tabs">
+  <button class="sd-tab active" onclick="sdTab('market', this)">🛒 Mahsulotlar bozori</button>
+  <button class="sd-tab" onclick="sdTab('drugs', this)">💊 Agro Dorilar</button>
+  <button class="sd-tab" onclick="sdTab('map', this)">🗺️ Dorixonalar xaritasi</button>
+  <button class="sd-tab" onclick="sdTab('agro', this)">👨‍🌾 Agronomlar <span class="tab-badge">YANGI</span></button>
+  <button class="sd-tab" onclick="sdTab('ai', this)">🤖 AI Yordamchi <span class="tab-badge">YANGI</span></button>
+</div>
 
-  <header class="header">
+<!-- ========== PANEL: MARKET (original) ========== -->
+<div class="sd-panel active" id="panel-market">
+  <section class="products-preview">
+    <h2>Barcha mahsulotlar</h2>
+    <div class="products" id="products"></div>
+  </section>
+</div>
 
-    <a href="index.html" class="home-btn">
-      ← Bosh sahifa
-    </a>
+<!-- ========== PANEL: DRUGS ========== -->
+<div class="sd-panel" id="panel-drugs">
+  <div class="filter-bar">
+    <button class="fchip active" onclick="filterDrugs('all',this)">Hammasi</button>
+    <button class="fchip" onclick="filterDrugs('i',this)">🐛 Insektitsidlar</button>
+    <button class="fchip" onclick="filterDrugs('f',this)">🍄 Fungitsidlar</button>
+    <button class="fchip" onclick="filterDrugs('h',this)">🌿 Gerbitsidlar</button>
+    <button class="fchip" onclick="filterDrugs('g',this)">💧 O'g'itlar</button>
+    <button class="fchip" onclick="filterDrugs('b',this)">🧬 Biologik</button>
+  </div>
+  <div class="drug-grid" id="drug-grid"></div>
+</div>
 
-    <a href="login.html" class="admin-btn" id="roleBtn">Sotuvchilar uchun</a>
+<!-- ========== PANEL: MAP ========== -->
+<div class="sd-panel" id="panel-map">
+  <div class="map-section">
+    <div class="filter-bar" style="padding:0 0 16px;">
+      <button class="fchip active" onclick="filterMap('all',this)">Barcha shaharlar</button>
+      <button class="fchip" onclick="filterMap('toshkent',this)">Toshkent</button>
+      <button class="fchip" onclick="filterMap('samarqand',this)">Samarqand</button>
+      <button class="fchip" onclick="filterMap('surxondaryo',this)">Surxondaryo</button>
+      <button class="fchip" onclick="filterMap('fargona',this)">Farg'ona</button>
+    </div>
+    <div class="map-wrap"><div id="sd-map"></div></div>
+    <div class="map-legend">
+      <div class="leg-item"><div class="leg-dot" style="background:#22c55e"></div> To'liq assortiment</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#f59e0b"></div> Cheklangan assortiment</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#ef4444"></div> Mavjud emas</div>
+    </div>
+  </div>
+</div>
 
-    <div class="header-container">
+<!-- ========== PANEL: AGRONOMLAR ========== -->
+<div class="sd-panel" id="panel-agro">
+  <div class="agro-section">
 
-      <img src="image/logo3.jpg" class="logo">
-
-      <div class="brand-text">
-
-        <h1>Smart Dehqon</h1>
-        <p>Fermer va xaridorni bog‘laymiz</p>
-
+    <!-- Auth block -->
+    <div class="agro-auth" id="agro-auth">
+      <div id="agro-login-block">
+        <div style="font-size:40px;margin-bottom:8px">👨‍🌾</div>
+        <h3>Agronomga yozish uchun kiring</h3>
+        <p>Istalgan agronom bilan bog'lanish uchun qisqacha ro'yxatdan o'ting</p>
+        <div class="auth-form">
+          <input type="text" id="u-name" placeholder="Ismingiz">
+          <input type="text" id="u-phone" placeholder="Telefon (+998 90 ...)">
+          <select id="u-region">
+            <option value="">Viloyatingiz</option>
+            <option>Toshkent</option><option>Samarqand</option>
+            <option>Surxondaryo</option><option>Farg'ona</option>
+            <option>Andijon</option><option>Namangan</option>
+            <option>Buxoro</option><option>Xorazm</option>
+            <option>Qashqadaryo</option><option>Navoiy</option>
+            <option>Jizzax</option><option>Sirdaryo</option>
+            <option>Qoraqalpog'iston</option>
+          </select>
+          <button onclick="loginUser()">Kirish / Ro'yxatdan o'tish</button>
+        </div>
       </div>
-
+      <div class="user-bar" id="agro-user-bar" style="display:none">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="user-ava" id="u-ava">U</div>
+          <div>
+            <div style="font-weight:700;font-size:15px" id="u-display-name">—</div>
+            <div style="font-size:12px;color:#9e9e9e" id="u-display-region">—</div>
+          </div>
+        </div>
+        <button class="user-out-btn" onclick="logoutUser()">Chiqish</button>
+      </div>
     </div>
 
-  </header>
+    <!-- Agronomlar ro'yxati -->
+    <div class="agro-grid" id="agro-grid"></div>
 
+<<<<<<< HEAD
+    <!-- Chat panel -->
+    <div class="chat-panel" id="chat-panel" style="display:none">
+      <div class="chat-hdr">
+        <div class="chat-hdr-ava" id="chat-ava">A</div>
+        <div class="chat-hdr-info">
+          <h4 id="chat-name">Agronom</h4>
+          <p id="chat-spec">Mutaxassis</p>
+        </div>
+        <button class="chat-close-btn" onclick="closeChat()">✕</button>
+=======
 
 
   <!-- MAHSULOTLAR -->
@@ -69,43 +603,573 @@
       <div class="popup-actions">
         <button type="submit">Yuborish</button>
         <button type="button" class="secondary" onclick="closePopup()">Bekor</button>
+>>>>>>> 072e57e2bd90dc654b50245f729c323e778fb36e
       </div>
-    </form>
+      <div class="chat-msgs" id="chat-msgs"></div>
+      <div class="chat-inp-area">
+        <label class="chat-img-label" for="chat-file-inp" title="Rasm yuborish">📷</label>
+        <input type="file" id="chat-file-inp" accept="image/*" onchange="chatSendImg(event)">
+        <textarea class="chat-textarea" id="chat-text" placeholder="Xabar yozing..."
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatSend();}"></textarea>
+        <button class="chat-send" onclick="chatSend()">➤</button>
+      </div>
+    </div>
 
   </div>
+</div>
 
+<!-- ========== PANEL: AI ========== -->
+<div class="sd-panel" id="panel-ai">
+  <div class="ai-section">
+    <div class="ai-intro-card">
+      <div class="ai-intro-icon">🤖</div>
+      <div>
+        <h2>AI <em>Agronom Yordamchi</em></h2>
+        <p>O'simlik kasalliklari, dori tanlash va agrotexnologiya bo'yicha savollarga tez va aniq javob oling.</p>
+        <div class="ai-tags">
+          <span class="ai-tag">🌿 Kasallik tashxisi</span>
+          <span class="ai-tag">💊 Dori tavsiyasi</span>
+          <span class="ai-tag">📅 Ekin jadvali</span>
+          <span class="ai-tag">☀️ Ob-havo tahlili</span>
+          <span class="ai-tag">📊 Hosildorlik</span>
+        </div>
+      </div>
+    </div>
 
+    <div class="ai-chat-wrap">
+      <div class="ai-chat-hdr">
+        <div class="ai-ava">🤖</div>
+        <div>
+          <h4>AgriBot — AI Yordamchi</h4>
+          <p>Powered by Claude AI • Doim tayyor</p>
+        </div>
+        <div class="ai-online-badge">● ONLINE</div>
+      </div>
+      <div class="ai-msgs" id="ai-msgs"></div>
+      <div class="ai-inp-area">
+        <input type="text" class="ai-input" id="ai-inp"
+          placeholder="Masalan: pomidorning bargi sariq bo'lyapti..."
+          onkeydown="if(event.key==='Enter')aiSend()">
+        <button class="ai-send" onclick="aiSend()">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <!-- SCRIPTS -->
+<!-- ========== ORIGINAL POPUP ========== -->
+<div id="popup" class="popup">
+  <form class="popup-box" onsubmit="submitOrder(event)">
+    <h3>Telefon raqamingiz</h3>
+    <input type="tel" id="phoneInput" name="phone" placeholder="+998 90 123 45 67"
+      pattern="^\+998\s?(33|50|55|77|88|90|91|93|94|95|97|98|99)\s?\d{3}\s?\d{2}\s?\d{2}$"
+      title="Telefon raqamni +998 90 123 45 67 formatida kiriting" required />
+    <div class="popup-actions">
+      <button type="submit">Yuborish</button>
+      <button type="button" class="secondary" onclick="closePopup()">Bekor</button>
+    </div>
+  </form>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Drug modal -->
+<div class="dmodal-overlay" id="drug-modal">
+  <div class="dmodal" id="drug-modal-content"></div>
+</div>
 
-  <script src="product.js"></script>
-  <script>
-    window.addEventListener("DOMContentLoaded", () => {
+<!-- Image full preview -->
+<div class="img-full-overlay" id="img-full" onclick="document.getElementById('img-full').classList.remove('open')">
+  <button class="img-full-close">✕</button>
+  <img id="img-full-src" src="" alt="">
+</div>
 
-      const role = localStorage.getItem("role")
-      const btn = document.getElementById("roleBtn")
+<!-- ========== SCRIPTS ========== -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="product.js"></script>
 
-      if (!btn) return
+<!-- Leaflet — script defer bilan yuklanadi -->
+<script>
+(function loadLeaflet() {
+  var script = document.createElement('script');
+  script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  script.onload = function() { window._leafletReady = true; if (window._mapPending) initMap(); };
+  document.head.appendChild(script);
+})();
+</script>
 
-      // 🧑‍🌾 FARMER
-      if (role === "farmer") {
-        btn.innerText = "Admin panel"
-        btn.href = "admin.html"
-      }
+<script>
+/* ======================================================
+   TABS
+====================================================== */
+function sdTab(id, el) {
+  document.querySelectorAll('.sd-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sd-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  el.classList.add('active');
+  if (id === 'map') {
+    if (window._leafletReady) initMap();
+    else window._mapPending = true;
+  }
+}
 
-      // 🛒 BUYER
-      else {
-        btn.innerText = "Sotuvchilar uchun"
-        btn.href = "login.html"
-      }
+/* ======================================================
+   ORIGINAL role button logic
+====================================================== */
+window.addEventListener('DOMContentLoaded', () => {
+  const role = localStorage.getItem('role');
+  const btn = document.getElementById('roleBtn');
+  if (!btn) return;
+  if (role === 'farmer') { btn.innerText = 'Admin panel'; btn.href = 'admin.html'; }
+  else { btn.innerText = 'Sotuvchilar uchun'; btn.href = 'login.html'; }
+});
 
-    })
-  </script>
+/* ======================================================
+   DRUG DATA
+====================================================== */
+const DRUGS = [
+  { id:1, name:"Confidor", type:"i", emoji:"🐛",
+    active:"Imidakloprid 200 g/l",
+    use:"Sarg'ish shiralar, oq kapalak, trips va so'ruvchi hasharotlarga qarshi",
+    crop:["Pomidor","Bodring","Qalam","G'alla","Piyoz"],
+    dose:"0.5–1 ml/l suv", interval:"7–14 kun", lastUse:"Hosildan 7 kun oldin",
+    price:"85 000", unit:"500 ml",
+    warning:"Asalarilar uchun yuqori xavf. Gullash davrida ishlatmang.",
+    stores:[
+      {name:"AgriCenter Toshkent",city:"Toshkent",region:"toshkent",stock:"mavjud"},
+      {name:"FermerDori Samarqand",city:"Samarqand",region:"samarqand",stock:"cheklangan"},
+      {name:"Agro Plus Termiz",city:"Termiz",region:"surxondaryo",stock:"mavjud"},
+    ]},
+  { id:2, name:"Ridomil Gold", type:"f", emoji:"🍄",
+    active:"Metalaksil-M 40 g/kg + Mankozeb 640 g/kg",
+    use:"Fitohtora, downy mildew, Pythium kasalliklariga qarshi sistemik fungitsid",
+    crop:["Pomidor","Kartoshka","Uzum","Qovun","Tarvuz"],
+    dose:"2.5 g/l suv", interval:"10–14 kun", lastUse:"Hosildan 21 kun oldin",
+    price:"120 000", unit:"1 kg",
+    warning:"Suv havzalariga tushirmang. Ko'z va teridan himoya qiling.",
+    stores:[
+      {name:"AgroMax Toshkent",city:"Toshkent",region:"toshkent",stock:"mavjud"},
+      {name:"DehqonBozor Farg'ona",city:"Farg'ona",region:"fargona",stock:"mavjud"},
+      {name:"Samarqand Agro",city:"Samarqand",region:"samarqand",stock:"mavjud"},
+    ]},
+  { id:3, name:"Roundup", type:"h", emoji:"🌿",
+    active:"Glifosat 360 g/l",
+    use:"Ko'p yillik va bir yillik begona o'tlarga qarshi umumiy gerbitsid",
+    crop:["G'alla","Makkajo'xori","Paxta","Kungaboqar"],
+    dose:"3–5 ml/l suv", interval:"Bir sezon 1 marta", lastUse:"Ekishdan 2 hafta oldin",
+    price:"45 000", unit:"1 litr",
+    warning:"O'simliklarning yashil qismiga tegmasin. Shamol yo'q paytida ishlating.",
+    stores:[
+      {name:"AgriCenter Toshkent",city:"Toshkent",region:"toshkent",stock:"mavjud"},
+      {name:"Agro Termiz",city:"Termiz",region:"surxondaryo",stock:"cheklangan"},
+      {name:"FermerDori Namangan",city:"Namangan",region:"fargona",stock:"mavjud"},
+    ]},
+  { id:4, name:"Nutrivant Plus", type:"g", emoji:"💧",
+    active:"N-P-K 15-5-30 + mikroelementlar",
+    use:"Meva va sabzavot ekinlari uchun kompleks foliar o'g'it. Hosildorlikni oshiradi.",
+    crop:["Pomidor","Uzum","Olma","Shaftoli","Bodring"],
+    dose:"3–4 kg/ga", interval:"10–12 kun", lastUse:"Istalgan bosqich",
+    price:"210 000", unit:"5 kg",
+    warning:"Quyoshda emas, ertalab yoki kechqurun ishlating.",
+    stores:[
+      {name:"Agro Plus Toshkent",city:"Toshkent",region:"toshkent",stock:"mavjud"},
+      {name:"SmartAgro Samarqand",city:"Samarqand",region:"samarqand",stock:"mavjud"},
+      {name:"FermerMark Farg'ona",city:"Farg'ona",region:"fargona",stock:"mavjud"},
+    ]},
+  { id:5, name:"Bitoxibatsillin", type:"b", emoji:"🧬",
+    active:"Bacillus thuringiensis, 3000 IU/mg",
+    use:"Kapalak qurtlari va boshqa hasharotlarga qarshi biologik preparat",
+    crop:["Barchasi"],
+    dose:"1–2 kg/ga", interval:"5–7 kun", lastUse:"Hosilga qadar ishlash mumkin",
+    price:"32 000", unit:"1 kg",
+    warning:"Asalarilar uchun xavfsiz. Ko'z bilan aloqadan saqlaning.",
+    stores:[
+      {name:"BioAgro Toshkent",city:"Toshkent",region:"toshkent",stock:"mavjud"},
+      {name:"Agro Termiz",city:"Termiz",region:"surxondaryo",stock:"cheklangan"},
+    ]},
+  { id:6, name:"Topaz", type:"f", emoji:"🍄",
+    active:"Penkonazol 100 g/l",
+    use:"Unli shudring, zang kasalliklariga qarshi sistemik fungitsid",
+    crop:["Uzum","Olma","Shaftoli","Gilos","O'rik"],
+    dose:"0.4–0.5 ml/l", interval:"10–14 kun", lastUse:"Hosildan 14 kun oldin",
+    price:"95 000", unit:"500 ml",
+    warning:"Sovuq suvda eritib ishlating.",
+    stores:[
+      {name:"AgriCenter Toshkent",city:"Toshkent",region:"toshkent",stock:"mavjud"},
+      {name:"AgroPlus Andijon",city:"Andijon",region:"fargona",stock:"mavjud"},
+    ]},
+  { id:7, name:"Karate Zeon", type:"i", emoji:"🐛",
+    active:"Lambda-sihalotrin 50 g/l",
+    use:"G'alla shirasi, o'rgimchak kana, trips va boshqa zararlilarga qarshi",
+    crop:["G'alla","Paxta","Makkajo'xori","Sabzavotlar"],
+    dose:"0.5–1.5 ml/l", interval:"14–21 kun", lastUse:"Hosildan 14 kun oldin",
+    price:"68 000", unit:"500 ml",
+    warning:"Asalarilar uchun xavfli. Gullash davrida ishlatmang.",
+    stores:[
+      {name:"AgroMax Toshkent",city:"Toshkent",region:"toshkent",stock:"mavjud"},
+      {name:"DehqonBozor Samarqand",city:"Samarqand",region:"samarqand",stock:"mavjud"},
+      {name:"Surxon Agro Termiz",city:"Termiz",region:"surxondaryo",stock:"cheklangan"},
+    ]},
+  { id:8, name:"Maxim XL", type:"f", emoji:"🍄",
+    active:"Fludioxonil 25 g/l + Metalaksil-M 10 g/l",
+    use:"Urug' va ko'chat uchun kuchli sistemik fungitsid",
+    crop:["G'alla","Makkajo'xori","Kartoshka","Kungaboqar"],
+    dose:"1.5–2 l/t urug'", interval:"Ekish oldidan bir marta", lastUse:"—",
+    price:"185 000", unit:"1 litr",
+    warning:"Faqat urug'ni dorilab ekish uchun.",
+    stores:[
+      {name:"AgroCenter Toshkent",city:"Toshkent",region:"toshkent",stock:"mavjud"},
+      {name:"Farg'ona Agro",city:"Farg'ona",region:"fargona",stock:"mavjud"},
+    ]},
+];
 
+const PILLMAP = {i:'pill-i',f:'pill-f',h:'pill-h',g:'pill-g',b:'pill-b'};
+const PILLNAME = {i:'Insektitsid',f:'Fungitsid',h:'Gerbitsid',g:"O'g'it",b:'Biologik'};
 
+function renderDrugs(filter) {
+  const grid = document.getElementById('drug-grid');
+  const list = filter === 'all' ? DRUGS : DRUGS.filter(d => d.type === filter);
+  grid.innerHTML = '';
+  if (!list.length) { grid.innerHTML = '<p style="text-align:center;color:#9e9e9e;padding:40px">Bu toifada preparat topilmadi</p>'; return; }
+  list.forEach(d => {
+    const avail = d.stores.filter(s => s.stock === 'mavjud').length;
+    const card = document.createElement('div');
+    card.className = 'drug-card';
+    card.innerHTML = `
+      <div class="drug-card-emoji">${d.emoji}</div>
+      <div class="drug-card-body">
+        <span class="drug-type-pill ${PILLMAP[d.type]}">${PILLNAME[d.type]}</span>
+        <h3>${d.name}</h3>
+        <p>${d.use.slice(0,80)}…</p>
+        <div class="drug-meta">
+          <div class="drug-price">${d.price} so'm<small style="font-weight:400;font-size:11px;color:#9e9e9e"> / ${d.unit}</small></div>
+          <span class="drug-avail ${avail>0?'av-yes':'av-low'}">${avail>0?'✓ Mavjud':'⚠ Kam'}</span>
+        </div>
+        <div class="drug-store-info">📍 ${avail} ta dorixonada mavjud</div>
+        <button class="drug-detail-btn" onclick="openDrug(${d.id})">Batafsil →</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+function filterDrugs(t, el) {
+  document.querySelectorAll('#panel-drugs .fchip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active'); renderDrugs(t);
+}
+renderDrugs('all');
+
+/* ====== DRUG MODAL ====== */
+function openDrug(id) {
+  const d = DRUGS.find(x => x.id === id); if (!d) return;
+  document.getElementById('drug-modal-content').innerHTML = `
+    <div class="dmodal-head">
+      <button class="dmodal-close" onclick="closeDrug()">✕</button>
+      <div class="dmodal-emo">${d.emoji}</div>
+      <h2>${d.name}</h2>
+      <span class="drug-type-pill ${PILLMAP[d.type]}" style="display:inline-block;margin-top:6px">${PILLNAME[d.type]}</span>
+    </div>
+    <div class="dmodal-body">
+      <div class="info-grid2">
+        <div class="info-item"><label>Narxi</label><span style="color:#2e7d32;font-weight:700">${d.price} so'm / ${d.unit}</span></div>
+        <div class="info-item"><label>Dozasi</label><span>${d.dose}</span></div>
+        <div class="info-item"><label>Ishlatish oralig'i</label><span>${d.interval}</span></div>
+        <div class="info-item"><label>Oxirgi ishlatish</label><span>${d.lastUse}</span></div>
+      </div>
+      <div class="dmodal-section"><h4>Faol modda</h4><p>${d.active}</p></div>
+      <div class="dmodal-section"><h4>Qo'llanish</h4><p>${d.use}</p></div>
+      <div class="dmodal-section"><h4>Ekinlar</h4>
+        <div class="tag-row">${d.crop.map(c=>`<span class="stag">🌱 ${c}</span>`).join('')}</div>
+      </div>
+      <div class="dmodal-section"><h4>Dorixonalarda mavjudligi</h4>
+        <div class="store-rows">${d.stores.map(s=>`
+          <div class="store-row-item">
+            <div><div class="sname">${s.name}</div><div class="scity">📍 ${s.city}</div></div>
+            <span class="sstock" style="background:${s.stock==='mavjud'?'#e8f5e9':'#fff3e0'};color:${s.stock==='mavjud'?'#2e7d32':'#e65100'}">${s.stock==='mavjud'?'✓ Mavjud':'⚠ Cheklangan'}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div class="warn-box">⚠️ <div><strong>Ehtiyot:</strong> ${d.warning}</div></div>
+    </div>`;
+  document.getElementById('drug-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrug() {
+  document.getElementById('drug-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('drug-modal').addEventListener('click', e => { if (e.target===e.currentTarget) closeDrug(); });
+
+/* ====== MAP ====== */
+const MAP_STORES = [
+  {name:"AgriCenter",city:"Toshkent",lat:41.2995,lng:69.2401,type:"full",region:"toshkent"},
+  {name:"AgroMax",city:"Toshkent",lat:41.3111,lng:69.2797,type:"full",region:"toshkent"},
+  {name:"BioAgro",city:"Toshkent",lat:41.2800,lng:69.2200,type:"full",region:"toshkent"},
+  {name:"FermerDori",city:"Samarqand",lat:39.6542,lng:66.9597,type:"limited",region:"samarqand"},
+  {name:"SmartAgro",city:"Samarqand",lat:39.6600,lng:66.9800,type:"full",region:"samarqand"},
+  {name:"DehqonBozor",city:"Samarqand",lat:39.6400,lng:66.9650,type:"full",region:"samarqand"},
+  {name:"Agro Plus",city:"Termiz",lat:37.2246,lng:67.2783,type:"full",region:"surxondaryo"},
+  {name:"Surxon Agro",city:"Termiz",lat:37.2200,lng:67.2700,type:"limited",region:"surxondaryo"},
+  {name:"DehqonBozor",city:"Farg'ona",lat:40.3842,lng:71.7843,type:"full",region:"fargona"},
+  {name:"FermerMark",city:"Farg'ona",lat:40.3900,lng:71.7700,type:"full",region:"fargona"},
+  {name:"AgroPlus",city:"Andijon",lat:40.7821,lng:72.3442,type:"full",region:"fargona"},
+  {name:"Namangan Agro",city:"Namangan",lat:40.9983,lng:71.6726,type:"limited",region:"fargona"},
+  {name:"BuxoroAgro",city:"Buxoro",lat:39.7747,lng:64.4286,type:"limited",region:"other"},
+  {name:"Navoiy Dori",city:"Navoiy",lat:40.1003,lng:65.3791,type:"full",region:"other"},
+];
+
+let sdMap = null, sdMarkers = [];
+function initMap() {
+  if (sdMap) return; // already initialized
+  if (typeof L === 'undefined') { console.warn('Leaflet hali yuklanmagan'); return; }
+  sdMap = L.map('sd-map').setView([41.2995, 69.2401], 6);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap', maxZoom: 18
+  }).addTo(sdMap);
+  renderMapMarkers('all');
+}
+function renderMapMarkers(region) {
+  if (!sdMap) return;
+  sdMarkers.forEach(m => sdMap.removeLayer(m));
+  sdMarkers = [];
+  const list = region === 'all' ? MAP_STORES : MAP_STORES.filter(s => s.region === region);
+  list.forEach(s => {
+    const color = s.type === 'full' ? '#22c55e' : s.type === 'limited' ? '#f59e0b' : '#ef4444';
+    const ico = L.divIcon({
+      className:'',
+      html:`<div style="width:14px;height:14px;border-radius:50%;background:${color};border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3)"></div>`,
+      iconSize:[14,14],iconAnchor:[7,7]
+    });
+    const m = L.marker([s.lat,s.lng],{icon:ico})
+      .addTo(sdMap)
+      .bindPopup(`<strong>${s.name}</strong><br>📍 ${s.city}<br><span style="color:${color}">${s.type==='full'?'✓ To\'liq assortiment':s.type==='limited'?'⚠ Cheklangan':'✕ Mavjud emas'}</span>`);
+    sdMarkers.push(m);
+  });
+  if (list.length) sdMap.setView([list[0].lat,list[0].lng], region==='all'?6:9);
+}
+function filterMap(r, el) {
+  document.querySelectorAll('#panel-map .fchip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderMapMarkers(r);
+}
+
+/* ====== AGRONOMLAR ====== */
+const AGRONOMISTS = [
+  {id:1,name:"Bahodir Yusupov",init:"BY",spec:"Sabzavot va poliz ekinlari",region:"Toshkent",exp:"12 yil",rating:5,status:"on",statusTxt:"Online — javob beradi"},
+  {id:2,name:"Gulnora Rahimova",init:"GR",spec:"Mevali daraxtlar va uzum",region:"Samarqand",exp:"8 yil",rating:4,status:"on",statusTxt:"Online — javob beradi"},
+  {id:3,name:"Sherzod Toshmatov",init:"ST",spec:"G'alla va texnik ekinlar",region:"Farg'ona",exp:"15 yil",rating:5,status:"busy",statusTxt:"Band — 20 daqiqada bo'sh"},
+  {id:4,name:"Nodira Xasanova",init:"NX",spec:"O'simlik kasalliklari",region:"Buxoro",exp:"10 yil",rating:5,status:"on",statusTxt:"Online — javob beradi"},
+  {id:5,name:"Jamshid Mirzaev",init:"JM",spec:"Tuproq tahlili va o'g'it",region:"Surxondaryo",exp:"6 yil",rating:4,status:"off",statusTxt:"Offline — 2 soatdan keyin"},
+  {id:6,name:"Dilorom Nazarova",init:"DN",spec:"Biologik himoya usullari",region:"Andijon",exp:"9 yil",rating:4,status:"on",statusTxt:"Online — javob beradi"},
+];
+
+let currentUser = JSON.parse(localStorage.getItem('sd_user')||'null');
+let selAgro = null, chatData = {};
+
+function loginUser() {
+  const name = document.getElementById('u-name').value.trim();
+  const region = document.getElementById('u-region').value;
+  if (!name||!region) { alert('Ism va viloyatni kiriting!'); return; }
+  currentUser = {name,phone:document.getElementById('u-phone').value.trim(),region,init:name[0].toUpperCase()};
+  localStorage.setItem('sd_user',JSON.stringify(currentUser));
+  updateAuthUI();
+}
+function logoutUser() {
+  currentUser = null; localStorage.removeItem('sd_user'); updateAuthUI(); closeChat();
+}
+function updateAuthUI() {
+  if (currentUser) {
+    document.getElementById('agro-login-block').style.display = 'none';
+    const bar = document.getElementById('agro-user-bar');
+    bar.style.display = 'flex';
+    document.getElementById('u-ava').textContent = currentUser.init;
+    document.getElementById('u-display-name').textContent = currentUser.name;
+    document.getElementById('u-display-region').textContent = currentUser.region;
+  } else {
+    document.getElementById('agro-login-block').style.display = 'block';
+    document.getElementById('agro-user-bar').style.display = 'none';
+  }
+}
+updateAuthUI();
+
+function renderAgronomists() {
+  const grid = document.getElementById('agro-grid'); grid.innerHTML = '';
+  AGRONOMISTS.forEach(a => {
+    const stars = Array.from({length:5},(_,i)=>`<span class="star ${i<a.rating?'':'e'}">★</span>`).join('');
+    const dc = {on:'dot-on',busy:'dot-busy',off:'dot-off'}[a.status];
+    const card = document.createElement('div');
+    card.className = 'agro-card'; card.id = 'agro-'+a.id;
+    card.innerHTML = `
+      <div class="agro-ava">${a.init}</div>
+      <h3>${a.name}</h3>
+      <div class="agro-spec">🌱 ${a.spec}</div>
+      <div class="agro-region">📍 ${a.region} • ${a.exp} tajriba</div>
+      <div class="agro-stars">${stars}</div>
+      <div class="agro-status"><span class="status-dot ${dc}"></span>${a.statusTxt}</div>
+      <button class="agro-chat-btn" onclick="openChat(${a.id})">💬 Chat ochish</button>`;
+    grid.appendChild(card);
+  });
+}
+renderAgronomists();
+
+function openChat(id) {
+  if (!currentUser) { alert('Iltimos, avval tizimga kiring!'); return; }
+  const a = AGRONOMISTS.find(x=>x.id===id); if (!a) return;
+  selAgro = a;
+  document.querySelectorAll('.agro-card').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('agro-'+id).classList.add('sel');
+  document.getElementById('chat-ava').textContent = a.init;
+  document.getElementById('chat-name').textContent = a.name;
+  document.getElementById('chat-spec').textContent = a.spec+' • '+a.region;
+  const panel = document.getElementById('chat-panel');
+  panel.style.display = 'block';
+  if (!chatData[id]) chatData[id] = [{
+    from:'agro',text:`Assalomu alaykum, ${currentUser.name}! Men ${a.name}. ${a.spec} bo'yicha savollaringizga javob berishga tayyorman. 🌱`,time:now()
+  }];
+  renderChat(id);
+  panel.scrollIntoView({behavior:'smooth'});
+}
+function closeChat() {
+  document.getElementById('chat-panel').style.display = 'none';
+  document.querySelectorAll('.agro-card').forEach(c=>c.classList.remove('sel'));
+  selAgro = null;
+}
+function now() { return new Date().toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit'}); }
+
+function renderChat(id) {
+  const msgs = chatData[id]||[];
+  const box = document.getElementById('chat-msgs'); box.innerHTML = '';
+  msgs.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'msg-row '+(m.from==='user'?'sent':'recv');
+    let html = '';
+    if (m.img) html += `<img class="msg-img-preview" src="${m.img}" onclick="fullImg('${m.img}')">`;
+    if (m.text) html += `<div class="msg-bub">${m.text}</div>`;
+    div.innerHTML = html + `<div class="msg-time">${m.time||''}</div>`;
+    box.appendChild(div);
+  });
+  box.scrollTop = box.scrollHeight;
+}
+function chatSend() {
+  if (!selAgro||!currentUser) return;
+  const t = document.getElementById('chat-text').value.trim(); if (!t) return;
+  chatData[selAgro.id].push({from:'user',text:t,time:now()});
+  document.getElementById('chat-text').value = '';
+  renderChat(selAgro.id);
+  const id = selAgro.id;
+  const replies = [
+    "Savol uchun rahmat! Ko'proq ma'lumot bering.",
+    "Rasm yuborsangiz aniqroq tashxis qo'ya olaman.",
+    "Bu holat uchun Confidor yoki Ridomil Gold tavsiya qilaman.",
+    "Tuproq namligi va haroratni ham hisobga olish kerak.",
+    "O'simlikning barglari va ildizini yaqindan ko'rsating.",
+  ];
+  setTimeout(()=>{
+    chatData[id].push({from:'agro',text:replies[Math.floor(Math.random()*replies.length)],time:now()});
+    renderChat(id);
+  }, 900+Math.random()*700);
+}
+function chatSendImg(event) {
+  if (!selAgro||!currentUser) return;
+  const file = event.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    chatData[selAgro.id].push({from:'user',img:e.target.result,time:now()});
+    renderChat(selAgro.id);
+    const id = selAgro.id;
+    setTimeout(()=>{
+      chatData[id].push({from:'agro',text:"Rasm uchun rahmat! Ko'rib chiqyapman... Bu simptomlar Phytophthora infestans kasalligiga o'xshaydi. Ridomil Gold bilan davolashni tavsiya qilaman.",time:now()});
+      renderChat(id);
+    },1400);
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+function fullImg(src) {
+  document.getElementById('img-full-src').src = src;
+  document.getElementById('img-full').classList.add('open');
+}
+
+/* ====== AI ASSISTANT ====== */
+let aiMsgs = [];
+let aiTyping = false;
+
+function renderAI() {
+  const box = document.getElementById('ai-msgs'); box.innerHTML = '';
+  aiMsgs.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'msg-row '+(m.from==='user'?'sent':'recv');
+    if (m.typing) {
+      div.innerHTML = `<div class="msg-bub" style="background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.06)">
+        <div class="typing-wrap">
+          <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+        </div>
+      </div>`;
+    } else {
+      let html = `<div class="msg-bub" style="white-space:pre-wrap">${m.text}</div>`;
+      if (m.quickBtns) html += `<div class="ai-quick-row">${m.quickBtns.map(b=>`<button class="ai-qbtn" onclick="aiQuick('${b}')">${b}</button>`).join('')}</div>`;
+      div.innerHTML = html + `<div class="msg-time">${m.time||''}</div>`;
+    }
+    box.appendChild(div);
+  });
+  box.scrollTop = box.scrollHeight;
+}
+function aiQuick(txt) {
+  document.getElementById('ai-inp').value = txt;
+  aiSend();
+}
+
+// Init welcome message
+aiMsgs.push({
+  from:'ai',
+  text:"Salom! 🌱 Men AgriBot — aqlli agronom yordamchisi.\n\nO'simlik kasalliklari, dori tanlash va agro savollaringizga javob beraman.\n\nNima haqida gaplashamiz?",
+  quickBtns:["Pomidor kasalliklari","Shiralar bilan kurash","Uzum himoyasi","O'g'it tavsiyasi"],
+  time:now()
+});
+renderAI();
+
+const AI_LOCAL = {
+  "pomidor":"🍅 Pomidor kasalliklari:\n\n• Fitohtora — barglar qoralib chirishi. Ridomil Gold (2.5 g/l)\n• Kladosporioz — sariq dog'lar. Topaz (0.4 ml/l)\n• Shiralar — Confidor 0.5 ml/l\n\nDorilar Agro Dorilar bo'limida mavjud!",
+  "kartoshka":"🥔 Kartoshka himoyasi:\n\n• Fitohtora — Ridomil Gold (2.5 g/l)\n• Colorado qo'ng'izi — Karate Zeon (0.5-1 ml/l)\n• Urug' davolash — Maxim XL (1.5-2 l/t)\n\nErta profilaktika muhim!",
+  "uzum":"🍇 Uzum kasalliklari:\n\n• Mildyu — Ridomil Gold 2.5 g/l, har 10-14 kunda\n• Oidium — Topaz 0.4-0.5 ml/l\n\nGullash davrida insektitsid ishlatmang!",
+  "shiralar":"🐛 Shiralar bilan kurash:\n\n• Confidor (Imidakloprid) — 0.5-1 ml/l, eng samarali\n• Karate Zeon — 0.5-1.5 ml/l\n• Biologik — Bitoxibatsillin (asalarilar uchun xavfsiz)\n\n⚠️ Ertalab yoki kechqurun ishlating!",
+  "o'g'it":"💧 O'g'it tavsiyalari:\n\n• Nutrivant Plus — N-P-K 15-5-30, barglarga purkaladi\n• Pomidor va sabzavotlar uchun 3-4 kg/ga\n• Har 10-12 kunda\n\nTuproq tahlili asosida aniq miqdor belgilanadi.",
+};
+
+async function aiSend() {
+  if (aiTyping) return;
+  const inp = document.getElementById('ai-inp');
+  const text = inp.value.trim(); if (!text) return;
+  inp.value = '';
+  aiMsgs.push({from:'user',text,time:now()});
+  aiTyping = true;
+  aiMsgs.push({from:'ai',typing:true});
+  renderAI();
+
+  // Try Claude API
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:800,
+        system:"Siz Smart Dehqon platformasining AI agronom yordamchisisiz. O'zbek tilida 3-6 jumladan iborat qisqa, aniq, foydali javoblar bering. Faqat qishloq xo'jaligi, ekinlar, kasalliklar, dorilar haqida gapirasiz. Emoji ishlating.",
+        messages:[{role:"user",content:text}]
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || "Kechirasiz, javob bera olmadim.";
+    aiMsgs = aiMsgs.filter(m=>!m.typing);
+    aiMsgs.push({from:'ai',text:reply,time:now()});
+  } catch {
+    // Local fallback
+    await new Promise(r=>setTimeout(r,900));
+    aiMsgs = aiMsgs.filter(m=>!m.typing);
+    const lower = text.toLowerCase();
+    let reply = "Savolingizni aniqroq yozing — qaysi ekin, qanday simptom? Masalan: 'pomidor bargi sariq bo'lyapti'.";
+    for (const [k,v] of Object.entries(AI_LOCAL)) { if(lower.includes(k)){reply=v;break;} }
+    aiMsgs.push({from:'ai',text:reply,time:now()});
+  }
+  aiTyping = false;
+  renderAI();
+}
+</script>
 
 </body>
-
 </html>
